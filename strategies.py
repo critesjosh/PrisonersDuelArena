@@ -36,32 +36,46 @@ class CustomStrategy(Strategy):
 
         # Use AI to interpret the strategy
         self.strategy_pattern = self.interpreter.interpret_strategy(self.logic)
-        print(f"Interpreted strategy pattern: {self.strategy_pattern}")
+        print(f"[{name}] Initialized with logic: '{logic}'")
+        print(f"[{name}] Interpreted strategy pattern: {self.strategy_pattern}")
 
     def make_choice(self) -> bool:
         pattern_type = self.strategy_pattern['type']
         pattern = self.strategy_pattern['pattern']
+        choice = True  # Default to cooperation
+
+        print(f"[{self.name}] Making choice for move {self.move_counter + 1}")
+        print(f"[{self.name}] Using pattern type: {pattern_type}")
 
         if pattern_type == "sequence":
             total_sequence = pattern['cooperate_count'] + pattern['defect_count']
             position = self.move_counter % total_sequence
-            self.move_counter += 1
-            print(f"Sequence move {self.move_counter}: position {position}, pattern: {pattern}")
-            return position < pattern['cooperate_count']
+            should_cooperate = position < pattern['cooperate_count']
+
+            print(f"[{self.name}] Sequence details:")
+            print(f"  - Total sequence length: {total_sequence}")
+            print(f"  - Current position: {position}")
+            print(f"  - Cooperate count: {pattern['cooperate_count']}")
+            print(f"  - Decision: {'cooperate' if should_cooperate else 'defect'}")
+
+            choice = should_cooperate
 
         elif pattern_type == "conditional":
             if pattern['condition'] == "last_opponent_move":
-                return self.opponent_history[-1] if self.opponent_history else True
+                choice = self.opponent_history[-1] if self.opponent_history else True
+                print(f"[{self.name}] Conditional choice based on last opponent move: {'cooperate' if choice else 'defect'}")
 
         elif pattern_type == "simple":
             if pattern['action'] == "cooperate":
-                return True
+                choice = True
             elif pattern['action'] == "defect":
-                return False
+                choice = False
             elif pattern['action'] == "random":
-                return random.choice([True, False])
+                choice = random.choice([True, False])
+            print(f"[{self.name}] Simple action '{pattern['action']}' resulted in: {'cooperate' if choice else 'defect'}")
 
-        return True  # Default to cooperation as fallback
+        self.move_counter += 1
+        return choice
 
 class TitForTat(Strategy):
     def __init__(self):

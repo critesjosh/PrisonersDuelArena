@@ -1,4 +1,5 @@
 import os
+import json
 from openai import OpenAI
 from typing import Dict, Optional
 
@@ -33,7 +34,12 @@ class StrategyInterpreter:
                 ],
                 response_format={"type": "json_object"}
             )
-            return eval(response.choices[0].message.content)
+
+            # Safely parse JSON instead of using eval()
+            interpreted_strategy = json.loads(response.choices[0].message.content)
+            print(f"AI interpreted strategy '{strategy_text}' as: {interpreted_strategy}")
+            return interpreted_strategy
+
         except Exception as e:
             print(f"Error interpreting strategy: {e}")
             # Fallback to basic cooperation
