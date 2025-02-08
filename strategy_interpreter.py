@@ -8,20 +8,34 @@ class StrategyInterpreter:
         self.client = OpenAI()
         self.system_prompt = """
         You are a Prisoner's Dilemma strategy interpreter. Analyze the given strategy description
-        and return a JSON object with the following structure:
+        and return a JSON object that strictly follows this structure for the pattern types:
+
+        For sequence patterns (e.g. "10 then 10", "cooperate 5 then defect 5"):
         {
-            "type": "sequence" | "conditional" | "simple",
+            "type": "sequence",
             "pattern": {
-                "cooperate_count": number,      // For sequence type
-                "defect_count": number,         // For sequence type
-                "condition": string,            // For conditional type
-                "action": string               // For simple type
+                "cooperate_count": <number>,
+                "defect_count": <number>
             }
         }
-        Examples:
-        1. "10 then 10" -> {"type": "sequence", "pattern": {"cooperate_count": 10, "defect_count": 10}}
-        2. "always cooperate" -> {"type": "simple", "pattern": {"action": "cooperate"}}
-        3. "copy opponent's last move" -> {"type": "conditional", "pattern": {"condition": "last_opponent_move"}}
+
+        For conditional patterns (e.g. "copy opponent's last move"):
+        {
+            "type": "conditional",
+            "pattern": {
+                "condition": "last_opponent_move"
+            }
+        }
+
+        For simple patterns (e.g. "always cooperate", "always defect", "random"):
+        {
+            "type": "simple",
+            "pattern": {
+                "action": "cooperate" | "defect" | "random"
+            }
+        }
+
+        Important: For patterns like "X then Y", always interpret as sequence type with cooperate_count=X and defect_count=Y
         """
 
     def interpret_strategy(self, strategy_text: str) -> Dict:
@@ -35,9 +49,15 @@ class StrategyInterpreter:
                 response_format={"type": "json_object"}
             )
 
-            # Safely parse JSON instead of using eval()
             interpreted_strategy = json.loads(response.choices[0].message.content)
             print(f"AI interpreted strategy '{strategy_text}' as: {interpreted_strategy}")
+
+            # Validate the response structure
+            if interpreted_strategy["type"] == "sequence":
+                if "cooperate_count" not in interpreted_strategy["pattern"] or \
+                   "defect_count" not in interpreted_strategy["pattern"]:
+                    raise ValueError("Invalid sequence pattern structure")
+
             return interpreted_strategy
 
         except Exception as e:

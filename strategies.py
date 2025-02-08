@@ -23,21 +23,14 @@ class CustomStrategy(Strategy):
     interpreter = StrategyInterpreter()
 
     def __init__(self, name: str = None, description: str = None, logic: str = None):
-        # If parameters are not provided, try to get them from class storage
-        if name is None and description is None and logic is None:
-            instance_params = self.instances.get(self.__class__.__name__, {})
-            name = instance_params.get('name', 'Custom Strategy')
-            description = instance_params.get('description', 'A custom strategy')
-            logic = instance_params.get('logic', 'always cooperate')
-
-        super().__init__(name, description)
-        self.logic = logic.lower()
+        super().__init__(name or 'Custom Strategy', description or 'A custom strategy')
+        self.logic = logic.lower() if logic else 'always cooperate'
         self.move_counter = 0
 
         # Use AI to interpret the strategy
         self.strategy_pattern = self.interpreter.interpret_strategy(self.logic)
-        print(f"[{name}] Initialized with logic: '{logic}'")
-        print(f"[{name}] Interpreted strategy pattern: {self.strategy_pattern}")
+        print(f"[{self.name}] Initialized with logic: '{self.logic}'")
+        print(f"[{self.name}] Interpreted strategy pattern: {self.strategy_pattern}")
 
     def make_choice(self) -> bool:
         pattern_type = self.strategy_pattern['type']
@@ -49,21 +42,20 @@ class CustomStrategy(Strategy):
 
         if pattern_type == "sequence":
             total_sequence = pattern['cooperate_count'] + pattern['defect_count']
-            position = self.move_counter % total_sequence
-            should_cooperate = position < pattern['cooperate_count']
+            current_sequence_position = self.move_counter % total_sequence
+            should_cooperate = current_sequence_position < pattern['cooperate_count']
 
             print(f"[{self.name}] Sequence details:")
             print(f"  - Total sequence length: {total_sequence}")
-            print(f"  - Current position: {position}")
+            print(f"  - Current position in sequence: {current_sequence_position}")
             print(f"  - Cooperate count: {pattern['cooperate_count']}")
-            print(f"  - Decision: {'cooperate' if should_cooperate else 'defect'}")
+            print(f"  - Should cooperate: {should_cooperate}")
 
             choice = should_cooperate
 
         elif pattern_type == "conditional":
             if pattern['condition'] == "last_opponent_move":
                 choice = self.opponent_history[-1] if self.opponent_history else True
-                print(f"[{self.name}] Conditional choice based on last opponent move: {'cooperate' if choice else 'defect'}")
 
         elif pattern_type == "simple":
             if pattern['action'] == "cooperate":
@@ -72,7 +64,6 @@ class CustomStrategy(Strategy):
                 choice = False
             elif pattern['action'] == "random":
                 choice = random.choice([True, False])
-            print(f"[{self.name}] Simple action '{pattern['action']}' resulted in: {'cooperate' if choice else 'defect'}")
 
         self.move_counter += 1
         return choice
