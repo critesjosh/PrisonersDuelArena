@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import random
-from strategies import get_all_strategies
+from strategies import get_all_strategies, add_custom_strategy
 from game_logic import PrisonersDilemma
 from visualizations import create_score_plot, create_cooperation_plot, create_historical_performance_plot
 from strategy_stats import StrategyStats
@@ -28,6 +28,30 @@ def main():
 
     The game continues with a 0.3% chance of ending after each move.
     """)
+
+    # Add Custom Strategy Section
+    st.sidebar.title("Create Custom Strategy")
+    with st.sidebar:
+        st.markdown("""
+        ## Create Your Own Strategy
+        Define how your strategy should behave. You can use keywords like:
+        - "always cooperate"
+        - "always defect"
+        - "copy" or "mimic" (copies opponent's last move)
+        - "opposite" (does opposite of opponent's last move)
+        - "random"
+        """)
+
+        custom_name = st.text_input("Strategy Name", placeholder="My Custom Strategy")
+        custom_description = st.text_area("Strategy Description", placeholder="Describe how your strategy works")
+        custom_logic = st.text_area("Strategy Logic", placeholder="e.g., always cooperate first, then copy opponent")
+
+        if st.button("Add Custom Strategy"):
+            if custom_name and custom_description and custom_logic:
+                add_custom_strategy(custom_name, custom_description, custom_logic)
+                st.success(f"Added new strategy: {custom_name}")
+            else:
+                st.error("Please fill in all fields")
 
     # Get available strategies
     strategies = get_all_strategies()
