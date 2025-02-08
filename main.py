@@ -108,13 +108,6 @@ def main():
             use_container_width=True
         )
 
-        # Update and display historical performance
-        avg_scores = stats_manager.get_average_scores()
-        st.plotly_chart(
-            create_historical_performance_plot(avg_scores),
-            use_container_width=True
-        )
-
         # Strategy Analysis
         st.subheader("Strategy Analysis")
         analysis_df = pd.DataFrame({
@@ -144,8 +137,8 @@ def main():
         for i, opponent_strategy in enumerate(strategies):
             status_text.text(f"Playing against {opponent_strategy.name}...")
 
-            # Run 100 games against current strategy
-            for _ in range(100):
+            # Run 1000 games instead of 100 against current strategy
+            for _ in range(1000):
                 player_strategy = player_strategy_class()
                 opponent = type(opponent_strategy)()
                 results = game.run_tournament(player_strategy, opponent)
