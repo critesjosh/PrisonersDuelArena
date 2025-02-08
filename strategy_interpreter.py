@@ -4,60 +4,84 @@ from openai import OpenAI
 from typing import Dict, Optional
 
 class StrategyInterpreter:
+    _instance = None
+    _cache = {}  # Class-level cache for interpreted strategies
+
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super(StrategyInterpreter, cls).__new__(cls)
+        return cls._instance
+
     def __init__(self):
-        self.client = OpenAI()
-        self.system_prompt = """
-        You are a Prisoner's Dilemma strategy interpreter. Your task is to convert strategy descriptions
-        into actionable game logic. Focus on identifying key patterns and numerical sequences.
+        if not hasattr(self, 'initialized'):
+            self.client = OpenAI()
+            self.initialized = True
+            self.system_prompt = """
+            You are a Prisoner's Dilemma strategy interpreter. Your task is to convert strategy descriptions
+            into actionable game logic. Focus on identifying key patterns and numerical sequences.
 
-        IMPORTANT:
-        - Numbers can be written as words (e.g., "ten" = 10)
-        - Look for keywords: "moves", "rounds", "times", "then", "alternate", "copy"
-        - If a strategy starts with a sequence and then changes (e.g., "cooperate X times then copy"),
-          interpret it as a conditional pattern with initial_cooperation count
-        - Default to "simple" type only if no clear sequence or condition is found
+            IMPORTANT:
+            - Numbers can be written as words (e.g., "ten" = 10)
+            - Look for keywords: "moves", "rounds", "times", "then", "alternate", "copy"
+            - If a strategy starts with a sequence and then changes (e.g., "cooperate X times then copy"),
+              interpret it as a conditional pattern with initial_cooperation count
+            - Default to "simple" type only if no clear sequence or condition is found
 
-        Return a JSON object following one of these formats:
+            Return a JSON object following one of these formats:
 
-        1. For alternating/sequence patterns (e.g., "cooperate 5 moves then defect 5 moves"):
-        {
-            "type": "sequence",
-            "pattern": {
-                "cooperate_count": 5,
-                "defect_count": 5
+            1. For alternating/sequence patterns (e.g., "cooperate 5 moves then defect 5 moves"):
+            {
+                "type": "sequence",
+                "pattern": {
+                    "cooperate_count": 5,
+                    "defect_count": 5
+                }
             }
-        }
 
-        2. For reactive patterns (e.g., "copy opponent's last move" or "cooperate 3 times then copy"):
-        {
-            "type": "conditional",
-            "pattern": {
-                "condition": "last_opponent_move",
-                "initial_cooperation": 0  // Set this to the number of initial cooperation moves
+            2. For reactive patterns (e.g., "copy opponent's last move" or "cooperate 3 times then copy"):
+            {
+                "type": "conditional",
+                "pattern": {
+                    "condition": "last_opponent_move",
+                    "initial_cooperation": 0  // Set this to the number of initial cooperation moves
+                }
             }
-        }
 
-        3. For basic patterns (e.g., "always cooperate"):
-        {
-            "type": "simple",
-            "pattern": {
-                "action": "cooperate" | "defect" | "random"
+            3. For basic patterns (e.g., "always cooperate"):
+            {
+                "type": "simple",
+                "pattern": {
+                    "action": "cooperate" | "defect" | "random"
+                }
             }
-        }
 
-        Examples:
-        - Input: "cooperate first 3 moves then copy opponent"
-          Output: {"type": "conditional", "pattern": {"condition": "last_opponent_move", "initial_cooperation": 3}}
+            Examples:
+            - Input: "cooperate first 3 moves then copy opponent"
+              Output: {"type": "conditional", "pattern": {"condition": "last_opponent_move", "initial_cooperation": 3}}
 
-        - Input: "cooperate 10 moves then defect 10 moves"
-          Output: {"type": "sequence", "pattern": {"cooperate_count": 10, "defect_count": 10}}
+            - Input: "cooperate 10 moves then defect 10 moves"
+              Output: {"type": "sequence", "pattern": {"cooperate_count": 10, "defect_count": 10}}
 
-        - Input: "do what opponent did last"
-          Output: {"type": "conditional", "pattern": {"condition": "last_opponent_move", "initial_cooperation": 0}}
-        """
+            - Input: "do what opponent did last"
+              Output: {"type": "conditional", "pattern": {"condition": "last_opponent_move", "initial_cooperation": 0}}
+            """
+
+    def get_cached_interpretation(self, strategy_text: str) -> Optional[Dict]:
+        """Get cached interpretation if it exists."""
+        return self._cache.get(strategy_text.lower().strip())
+
+    def cache_interpretation(self, strategy_text: str, interpretation: Dict):
+        """Cache the interpretation for future use."""
+        self._cache[strategy_text.lower().strip()] = interpretation
 
     def interpret_strategy(self, strategy_text: str) -> Dict:
         try:
+            # Check cache first
+            cached = self.get_cached_interpretation(strategy_text)
+            if cached:
+                print(f"\n[Strategy Interpreter] Using cached interpretation for: '{strategy_text}'")
+                return cached
+
             # Clean and standardize input
             strategy_text = strategy_text.lower().strip()
 
@@ -139,6 +163,9 @@ class StrategyInterpreter:
 
             else:
                 raise ValueError(f"Unsupported strategy type: {strategy_type}")
+
+            # Cache the validated interpretation
+            self.cache_interpretation(strategy_text, interpreted_strategy)
 
             print("\n[Strategy Interpreter] Strategy interpretation completed successfully")
             return interpreted_strategy

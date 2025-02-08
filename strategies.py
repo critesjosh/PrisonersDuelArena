@@ -37,10 +37,15 @@ class CustomStrategy(Strategy):
         self.logic = final_logic
         self.move_counter = 0
 
-        # Use AI to interpret the strategy
-        self.strategy_pattern = self.interpreter.interpret_strategy(self.logic)
-        print(f"[{self.name}] Initialized with logic: '{self.logic}'")
-        print(f"[{self.name}] Interpreted strategy pattern: {self.strategy_pattern}")
+        # Check if strategy interpretation is already cached
+        cached_pattern = self.interpreter.get_cached_interpretation(self.logic)
+        if cached_pattern:
+            print(f"[{self.name}] Using cached strategy pattern")
+            self.strategy_pattern = cached_pattern
+        else:
+            # Use AI to interpret the strategy and cache it
+            print(f"[{self.name}] Interpreting new strategy: '{self.logic}'")
+            self.strategy_pattern = self.interpreter.interpret_strategy(self.logic)
 
     def make_choice(self) -> bool:
         pattern_type = self.strategy_pattern['type']
