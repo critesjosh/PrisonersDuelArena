@@ -22,8 +22,9 @@ def main():
     """)
 
     # Strategy selection
-    strategies = get_all_strategies()
-    strategy_dict = {s.name: s for s in strategies}
+    strategy_classes = [TitForTat, AlwaysCooperate, AlwaysDefect, RandomStrategy]
+    strategy_dict = {s().name: s for s in strategy_classes}
+    strategies = get_all_strategies()  # For display purposes
 
     col1, col2 = st.columns(2)
     
