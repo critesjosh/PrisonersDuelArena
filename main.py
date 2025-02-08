@@ -58,9 +58,8 @@ def main():
         game = PrisonersDilemma()
         player_strategy = strategy_dict[selected_strategy]()
 
-        # Randomly select opponent strategy (excluding player's strategy)
-        available_opponents = [s for s in strategies if s.name != selected_strategy]
-        opponent = type(random.choice(available_opponents))()
+        # Randomly select opponent strategy (including the possibility of same strategy)
+        opponent = type(random.choice(strategies))()
 
         # Run tournament
         results = game.run_tournament(player_strategy, opponent)
