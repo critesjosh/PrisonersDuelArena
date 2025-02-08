@@ -152,7 +152,11 @@ def main():
         for i, opponent_strategy in enumerate(strategies):
             status_text.text(f"Playing against {opponent_strategy.name}...")
 
-            for _ in range(1000):
+            num_games = 100  # Reduced from 1000
+            for game_num in range(num_games):
+                if game_num % 10 == 0:  # Update status every 10 games
+                    status_text.text(f"Playing against {opponent_strategy.name} - Game {game_num + 1}/{num_games}")
+                
                 player_strategy = player_strategy_class()
                 opponent = type(opponent_strategy)()
                 results = game.run_tournament(player_strategy, opponent)
