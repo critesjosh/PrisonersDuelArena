@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from strategies import get_all_strategies, TitForTat, AlwaysCooperate, AlwaysDefect, RandomStrategy
+from strategies import get_all_strategies
 from game_logic import PrisonersDilemma
 from visualizations import create_score_plot, create_cooperation_plot
 
@@ -12,7 +12,7 @@ st.set_page_config(
 
 def main():
     st.title("🎮 Prisoner's Dilemma Simulator")
-    
+
     st.markdown("""
     ## Game Rules
     In the Prisoner's Dilemma, two players must choose to either cooperate or defect:
@@ -21,13 +21,12 @@ def main():
     - If one defects while the other cooperates, the defector gets 5 points and the cooperator gets 0
     """)
 
-    # Strategy selection
-    strategy_classes = [TitForTat, AlwaysCooperate, AlwaysDefect, RandomStrategy]
-    strategy_dict = {s().name: s for s in strategy_classes}
-    strategies = get_all_strategies()  # For display purposes
+    # Get available strategies
+    strategies = get_all_strategies()
+    strategy_dict = {s.name: type(s) for s in strategies}
 
     col1, col2 = st.columns(2)
-    
+
     with col1:
         st.subheader("Select Your Strategy")
         selected_strategy = st.selectbox(
@@ -35,7 +34,8 @@ def main():
             options=[s.name for s in strategies],
             help="Select the strategy you want to play with"
         )
-        st.info(strategy_dict[selected_strategy].description)
+        # Get description from the strategy instance
+        st.info([s for s in strategies if s.name == selected_strategy][0].description)
 
     with col2:
         st.subheader("Select Opponent Strategy")
@@ -44,7 +44,8 @@ def main():
             options=[s.name for s in strategies],
             help="Select the strategy you want to play against"
         )
-        st.info(strategy_dict[opponent_strategy].description)
+        # Get description from the strategy instance
+        st.info([s for s in strategies if s.name == opponent_strategy][0].description)
 
     # Simulation parameters
     iterations = st.slider(
