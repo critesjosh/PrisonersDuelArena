@@ -3,7 +3,8 @@ import pandas as pd
 import random
 from strategies import get_all_strategies
 from game_logic import PrisonersDilemma
-from visualizations import create_score_plot, create_cooperation_plot
+from visualizations import create_score_plot, create_cooperation_plot, create_historical_performance_plot
+from strategy_stats import StrategyStats
 
 st.set_page_config(
     page_title="Prisoner's Dilemma Simulator",
@@ -28,6 +29,20 @@ def main():
     strategies = get_all_strategies()
     strategy_dict = {s.name: type(s) for s in strategies}
 
+    # Initialize strategy stats
+    stats_manager = StrategyStats()
+
+    # Display historical performance
+    st.subheader("Historical Strategy Performance")
+    avg_scores = stats_manager.get_average_scores()
+    if avg_scores:
+        st.plotly_chart(
+            create_historical_performance_plot(avg_scores),
+            use_container_width=True
+        )
+    else:
+        st.info("Play some games to see how different strategies perform over time!")
+
     # Single column for player strategy selection
     st.subheader("Select Your Strategy")
     selected_strategy = st.selectbox(
@@ -49,6 +64,10 @@ def main():
 
         # Run tournament
         results = game.run_tournament(player_strategy, opponent)
+
+        # Update strategy stats
+        stats_manager.update_stats(selected_strategy, results['final_score1'], results['total_rounds'])
+        stats_manager.update_stats(opponent.name, results['final_score2'], results['total_rounds'])
 
         # Display opponent's strategy
         st.subheader("Opponent's Strategy")
@@ -76,6 +95,13 @@ def main():
 
         st.plotly_chart(
             create_cooperation_plot(results, selected_strategy, opponent.name),
+            use_container_width=True
+        )
+
+        # Update and display historical performance
+        avg_scores = stats_manager.get_average_scores()
+        st.plotly_chart(
+            create_historical_performance_plot(avg_scores),
             use_container_width=True
         )
 
