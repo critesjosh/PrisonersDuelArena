@@ -35,11 +35,17 @@ class CustomStrategy(Strategy):
         # Parse numeric patterns like "10 then 10" or "cooperate 5 times then defect 5 times"
         pattern = r'(\d+)\s*(?:times?)?\s*(?:then|and|,)\s*(\d+)'
         matches = re.findall(pattern, self.logic)
+
+        # Print debug information about pattern matching
+        print(f"Logic string: {self.logic}")
+        print(f"Pattern matches: {matches}")
+
         if matches:
             self.sequence_mode = True
             self.cooperate_count = int(matches[0][0])
             self.defect_count = int(matches[0][1])
             self.total_sequence = self.cooperate_count + self.defect_count
+            print(f"Sequence mode activated: {self.cooperate_count} cooperate, {self.defect_count} defect")
         else:
             self.sequence_mode = False
             # Parse the logic string to determine the strategy
@@ -52,8 +58,10 @@ class CustomStrategy(Strategy):
     def make_choice(self) -> bool:
         if self.sequence_mode:
             position_in_sequence = self.move_counter % self.total_sequence
+            choice = position_in_sequence < self.cooperate_count
+            print(f"Move {self.move_counter}: position {position_in_sequence}, {'cooperate' if choice else 'defect'}")
             self.move_counter += 1
-            return position_in_sequence < self.cooperate_count
+            return choice
 
         if self.always_cooperate:
             return True
