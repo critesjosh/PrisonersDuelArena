@@ -64,9 +64,15 @@ class CustomStrategy(Strategy):
             choice = should_cooperate
 
         elif pattern_type == "conditional":
-            if pattern['condition'] == "last_opponent_move":
-                choice = self.opponent_history[-1] if self.opponent_history else True
-                print(f"[{self.name}] Conditional choice based on opponent's last move: {choice}")
+            initial_cooperation = pattern.get('initial_cooperation', 0)
+
+            if self.move_counter < initial_cooperation:
+                choice = True
+                print(f"[{self.name}] In initial cooperation phase: move {self.move_counter + 1} of {initial_cooperation}")
+            else:
+                if pattern['condition'] == "last_opponent_move":
+                    choice = self.opponent_history[-1] if self.opponent_history else True
+                    print(f"[{self.name}] Copying opponent's last move: {choice}")
 
         elif pattern_type == "simple":
             if pattern['action'] == "cooperate":

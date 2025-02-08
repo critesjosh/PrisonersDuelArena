@@ -12,8 +12,9 @@ class StrategyInterpreter:
 
         IMPORTANT:
         - Numbers can be written as words (e.g., "ten" = 10)
-        - Look for keywords: "moves", "rounds", "times", "then", "alternate"
-        - Always validate that sequence patterns have clear numbers
+        - Look for keywords: "moves", "rounds", "times", "then", "alternate", "copy"
+        - If a strategy starts with a sequence and then changes (e.g., "cooperate X times then copy"),
+          interpret it as a conditional pattern with initial_cooperation count
         - Default to "simple" type only if no clear sequence or condition is found
 
         Return a JSON object following one of these formats:
@@ -27,11 +28,12 @@ class StrategyInterpreter:
             }
         }
 
-        2. For reactive patterns (e.g., "copy opponent's last move"):
+        2. For reactive patterns (e.g., "copy opponent's last move" or "cooperate 3 times then copy"):
         {
             "type": "conditional",
             "pattern": {
-                "condition": "last_opponent_move"
+                "condition": "last_opponent_move",
+                "initial_cooperation": 0  // Set this to the number of initial cooperation moves
             }
         }
 
@@ -44,14 +46,14 @@ class StrategyInterpreter:
         }
 
         Examples:
+        - Input: "cooperate first 3 moves then copy opponent"
+          Output: {"type": "conditional", "pattern": {"condition": "last_opponent_move", "initial_cooperation": 3}}
+
         - Input: "cooperate 10 moves then defect 10 moves"
           Output: {"type": "sequence", "pattern": {"cooperate_count": 10, "defect_count": 10}}
 
-        - Input: "alternate between cooperating 3 times and defecting twice"
-          Output: {"type": "sequence", "pattern": {"cooperate_count": 3, "defect_count": 2}}
-
         - Input: "do what opponent did last"
-          Output: {"type": "conditional", "pattern": {"condition": "last_opponent_move"}}
+          Output: {"type": "conditional", "pattern": {"condition": "last_opponent_move", "initial_cooperation": 0}}
         """
 
     def interpret_strategy(self, strategy_text: str) -> Dict:
@@ -120,7 +122,15 @@ class StrategyInterpreter:
             elif strategy_type == "conditional":
                 if pattern.get("condition") != "last_opponent_move":
                     raise ValueError("Unsupported conditional pattern")
-                print(f"[Strategy Interpreter] Validated conditional pattern")
+
+                # Ensure initial_cooperation is present and valid
+                if "initial_cooperation" not in pattern:
+                    pattern["initial_cooperation"] = 0
+                pattern["initial_cooperation"] = int(pattern["initial_cooperation"])
+
+                print(f"[Strategy Interpreter] Validated conditional pattern:")
+                print(f"  - Condition: {pattern['condition']}")
+                print(f"  - Initial cooperation: {pattern['initial_cooperation']}")
 
             elif strategy_type == "simple":
                 if pattern.get("action") not in ["cooperate", "defect", "random"]:
