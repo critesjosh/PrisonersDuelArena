@@ -1,5 +1,6 @@
 import random
 from typing import List, Tuple, Optional, Callable
+import re
 
 class Strategy:
     def __init__(self, name: str, description: str):
@@ -28,15 +29,32 @@ class CustomStrategy(Strategy):
             logic = instance_params.get('logic', 'always cooperate')
 
         super().__init__(name, description)
-        self.logic = logic
-        # Parse the logic string to determine the strategy
-        self.always_cooperate = "always cooperate" in logic.lower()
-        self.always_defect = "always defect" in logic.lower()
-        self.copy_opponent = "copy" in logic.lower() or "mimic" in logic.lower()
-        self.opposite = "opposite" in logic.lower()
-        self.random = "random" in logic.lower()
+        self.logic = logic.lower()
+        self.move_counter = 0
+
+        # Parse numeric patterns like "10 then 10" or "cooperate 5 times then defect 5 times"
+        pattern = r'(\d+)\s*(?:times?)?\s*(?:then|and|,)\s*(\d+)'
+        matches = re.findall(pattern, self.logic)
+        if matches:
+            self.sequence_mode = True
+            self.cooperate_count = int(matches[0][0])
+            self.defect_count = int(matches[0][1])
+            self.total_sequence = self.cooperate_count + self.defect_count
+        else:
+            self.sequence_mode = False
+            # Parse the logic string to determine the strategy
+            self.always_cooperate = "always cooperate" in self.logic
+            self.always_defect = "always defect" in self.logic
+            self.copy_opponent = "copy" in self.logic or "mimic" in self.logic
+            self.opposite = "opposite" in self.logic
+            self.random = "random" in self.logic
 
     def make_choice(self) -> bool:
+        if self.sequence_mode:
+            position_in_sequence = self.move_counter % self.total_sequence
+            self.move_counter += 1
+            return position_in_sequence < self.cooperate_count
+
         if self.always_cooperate:
             return True
         elif self.always_defect:
