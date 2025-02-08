@@ -47,7 +47,7 @@ class CustomStrategy(Strategy):
         pattern = self.strategy_pattern['pattern']
         choice = True  # Default to cooperation
 
-        print(f"[{self.name}] Making choice for move {self.move_counter + 1}")
+        print(f"\n[{self.name}] Making choice for move {self.move_counter + 1}")
         print(f"[{self.name}] Using pattern type: {pattern_type}")
 
         if pattern_type == "sequence":
@@ -66,6 +66,7 @@ class CustomStrategy(Strategy):
         elif pattern_type == "conditional":
             if pattern['condition'] == "last_opponent_move":
                 choice = self.opponent_history[-1] if self.opponent_history else True
+                print(f"[{self.name}] Conditional choice based on opponent's last move: {choice}")
 
         elif pattern_type == "simple":
             if pattern['action'] == "cooperate":
@@ -74,6 +75,7 @@ class CustomStrategy(Strategy):
                 choice = False
             elif pattern['action'] == "random":
                 choice = random.choice([True, False])
+            print(f"[{self.name}] Simple action '{pattern['action']}' resulted in: {choice}")
 
         self.move_counter += 1
         return choice
