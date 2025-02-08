@@ -1,6 +1,7 @@
 import random
 from typing import List, Tuple, Optional, Callable
 import re
+from strategy_interpreter import StrategyInterpreter
 
 class Strategy:
     def __init__(self, name: str, description: str):
@@ -19,6 +20,7 @@ class Strategy:
 
 class CustomStrategy(Strategy):
     instances = {}  # Class variable to store instance parameters
+    interpreter = StrategyInterpreter()
 
     def __init__(self, name: str = None, description: str = None, logic: str = None):
         # If parameters are not provided, try to get them from class storage
@@ -32,48 +34,34 @@ class CustomStrategy(Strategy):
         self.logic = logic.lower()
         self.move_counter = 0
 
-        # Parse numeric patterns like "10 then 10" or "cooperate 5 times then defect 5 times"
-        pattern = r'(\d+)\s*(?:times?)?\s*(?:then|and|,)\s*(\d+)'
-        matches = re.findall(pattern, self.logic)
-
-        # Print debug information about pattern matching
-        print(f"Logic string: {self.logic}")
-        print(f"Pattern matches: {matches}")
-
-        if matches:
-            self.sequence_mode = True
-            self.cooperate_count = int(matches[0][0])
-            self.defect_count = int(matches[0][1])
-            self.total_sequence = self.cooperate_count + self.defect_count
-            print(f"Sequence mode activated: {self.cooperate_count} cooperate, {self.defect_count} defect")
-        else:
-            self.sequence_mode = False
-            # Parse the logic string to determine the strategy
-            self.always_cooperate = "always cooperate" in self.logic
-            self.always_defect = "always defect" in self.logic
-            self.copy_opponent = "copy" in self.logic or "mimic" in self.logic
-            self.opposite = "opposite" in self.logic
-            self.random = "random" in self.logic
+        # Use AI to interpret the strategy
+        self.strategy_pattern = self.interpreter.interpret_strategy(self.logic)
+        print(f"Interpreted strategy pattern: {self.strategy_pattern}")
 
     def make_choice(self) -> bool:
-        if self.sequence_mode:
-            position_in_sequence = self.move_counter % self.total_sequence
-            choice = position_in_sequence < self.cooperate_count
-            print(f"Move {self.move_counter}: position {position_in_sequence}, {'cooperate' if choice else 'defect'}")
-            self.move_counter += 1
-            return choice
+        pattern_type = self.strategy_pattern['type']
+        pattern = self.strategy_pattern['pattern']
 
-        if self.always_cooperate:
-            return True
-        elif self.always_defect:
-            return False
-        elif self.copy_opponent and self.opponent_history:
-            return self.opponent_history[-1]
-        elif self.opposite and self.opponent_history:
-            return not self.opponent_history[-1]
-        elif self.random:
-            return random.choice([True, False])
-        return True  # Default to cooperation if no clear strategy is detected
+        if pattern_type == "sequence":
+            total_sequence = pattern['cooperate_count'] + pattern['defect_count']
+            position = self.move_counter % total_sequence
+            self.move_counter += 1
+            print(f"Sequence move {self.move_counter}: position {position}, pattern: {pattern}")
+            return position < pattern['cooperate_count']
+
+        elif pattern_type == "conditional":
+            if pattern['condition'] == "last_opponent_move":
+                return self.opponent_history[-1] if self.opponent_history else True
+
+        elif pattern_type == "simple":
+            if pattern['action'] == "cooperate":
+                return True
+            elif pattern['action'] == "defect":
+                return False
+            elif pattern['action'] == "random":
+                return random.choice([True, False])
+
+        return True  # Default to cooperation as fallback
 
 class TitForTat(Strategy):
     def __init__(self):
