@@ -17,7 +17,16 @@ class Strategy:
         self.opponent_history.append(opponent_choice)
 
 class CustomStrategy(Strategy):
-    def __init__(self, name: str, description: str, logic: str):
+    instances = {}  # Class variable to store instance parameters
+
+    def __init__(self, name: str = None, description: str = None, logic: str = None):
+        # If parameters are not provided, try to get them from class storage
+        if name is None and description is None and logic is None:
+            instance_params = self.instances.get(self.__class__.__name__, {})
+            name = instance_params.get('name', 'Custom Strategy')
+            description = instance_params.get('description', 'A custom strategy')
+            logic = instance_params.get('logic', 'always cooperate')
+
         super().__init__(name, description)
         self.logic = logic
         # Parse the logic string to determine the strategy
@@ -85,7 +94,18 @@ class RandomStrategy(Strategy):
 _custom_strategies: List[CustomStrategy] = []
 
 def add_custom_strategy(name: str, description: str, logic: str) -> CustomStrategy:
-    strategy = CustomStrategy(name, description, logic)
+    strategy_class = type(
+        f"CustomStrategy_{len(_custom_strategies)}",
+        (CustomStrategy,),
+        {}
+    )
+    # Store the parameters in the class
+    strategy_class.instances[strategy_class.__name__] = {
+        'name': name,
+        'description': description,
+        'logic': logic
+    }
+    strategy = strategy_class()
     _custom_strategies.append(strategy)
     return strategy
 
