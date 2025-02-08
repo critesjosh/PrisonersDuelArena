@@ -36,17 +36,6 @@ def main():
     # Initialize strategy stats
     stats_manager = StrategyStats()
 
-    # Display historical performance
-    st.subheader("Historical Strategy Performance")
-    avg_scores = stats_manager.get_average_scores()
-    if avg_scores:
-        st.plotly_chart(
-            create_historical_performance_plot(avg_scores),
-            use_container_width=True
-        )
-    else:
-        st.info("Play some games to see how different strategies perform over time!")
-
     # Single column for player strategy selection
     st.subheader("Select Your Strategy")
     selected_strategy = st.selectbox(
