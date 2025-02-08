@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import random
 from strategies import get_all_strategies
 from game_logic import PrisonersDilemma
 from visualizations import create_score_plot, create_cooperation_plot
@@ -25,27 +26,15 @@ def main():
     strategies = get_all_strategies()
     strategy_dict = {s.name: type(s) for s in strategies}
 
-    col1, col2 = st.columns(2)
-
-    with col1:
-        st.subheader("Select Your Strategy")
-        selected_strategy = st.selectbox(
-            "Choose your strategy",
-            options=[s.name for s in strategies],
-            help="Select the strategy you want to play with"
-        )
-        # Get description from the strategy instance
-        st.info([s for s in strategies if s.name == selected_strategy][0].description)
-
-    with col2:
-        st.subheader("Select Opponent Strategy")
-        opponent_strategy = st.selectbox(
-            "Choose opponent's strategy",
-            options=[s.name for s in strategies],
-            help="Select the strategy you want to play against"
-        )
-        # Get description from the strategy instance
-        st.info([s for s in strategies if s.name == opponent_strategy][0].description)
+    # Single column for player strategy selection
+    st.subheader("Select Your Strategy")
+    selected_strategy = st.selectbox(
+        "Choose your strategy",
+        options=[s.name for s in strategies],
+        help="Select the strategy you want to play with"
+    )
+    # Get description from the strategy instance
+    st.info([s for s in strategies if s.name == selected_strategy][0].description)
 
     # Simulation parameters
     iterations = st.slider(
@@ -58,13 +47,20 @@ def main():
     )
 
     if st.button("Run Simulation"):
-        # Initialize game and strategies
+        # Initialize game and player strategy
         game = PrisonersDilemma()
         player_strategy = strategy_dict[selected_strategy]()
-        opponent = strategy_dict[opponent_strategy]()
+
+        # Randomly select opponent strategy (excluding player's strategy)
+        available_opponents = [s for s in strategies if s.name != selected_strategy]
+        opponent = type(random.choice(available_opponents))()
 
         # Run tournament
         results = game.run_tournament(player_strategy, opponent, iterations)
+
+        # Display opponent's strategy
+        st.subheader("Opponent's Strategy")
+        st.info(f"You played against: {opponent.name}\n\n{opponent.description}")
 
         # Display results
         col1, col2, col3 = st.columns(3)
@@ -80,12 +76,12 @@ def main():
 
         # Visualizations
         st.plotly_chart(
-            create_score_plot(results, selected_strategy, opponent_strategy),
+            create_score_plot(results, selected_strategy, opponent.name),
             use_container_width=True
         )
 
         st.plotly_chart(
-            create_cooperation_plot(results, selected_strategy, opponent_strategy),
+            create_cooperation_plot(results, selected_strategy, opponent.name),
             use_container_width=True
         )
 
@@ -95,13 +91,13 @@ def main():
             'Metric': ['Total Score', 'Average Score per Round', 'Cooperation Rate'],
             'Your Strategy': [
                 results['final_score1'],
-                results['final_score1'] / iterations,
-                f"{results['cooperation_rate1']:.2%}"
+                round(results['final_score1'] / iterations, 2),
+                f"{results['cooperation_rate1']:.1%}"
             ],
             'Opponent Strategy': [
                 results['final_score2'],
-                results['final_score2'] / iterations,
-                f"{results['cooperation_rate2']:.2%}"
+                round(results['final_score2'] / iterations, 2),
+                f"{results['cooperation_rate2']:.1%}"
             ]
         })
         st.table(analysis_df)
