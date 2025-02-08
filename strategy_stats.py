@@ -1,50 +1,59 @@
-import json
-from pathlib import Path
-from typing import Dict, List
-import pandas as pd
+from typing import Dict
+from models import Game, StrategyPerformance, get_db
+from datetime import datetime
 
 class StrategyStats:
     def __init__(self):
-        self.stats_file = Path("strategy_stats.json")
-        self.stats = self._load_stats()
-    
-    def _load_stats(self) -> Dict:
-        if self.stats_file.exists():
-            try:
-                with open(self.stats_file, 'r') as f:
-                    return json.load(f)
-            except:
-                return self._initialize_stats()
-        return self._initialize_stats()
-    
-    def _initialize_stats(self) -> Dict:
-        return {
-            'games_played': {},  # Number of games each strategy has played
-            'total_score': {},   # Total normalized score for each strategy
-        }
-    
-    def _save_stats(self):
-        with open(self.stats_file, 'w') as f:
-            json.dump(self.stats, f)
-    
-    def update_stats(self, strategy_name: str, score: float, num_rounds: int):
+        self._ensure_db_session()
+
+    def _ensure_db_session(self):
+        db = next(get_db())
+        self.db = db
+
+    def update_stats(self, strategy_name: str, score: float, num_rounds: int, cooperation_rate: float = 0.0):
         """Update stats with normalized score (per 100 rounds)"""
-        if strategy_name not in self.stats['games_played']:
-            self.stats['games_played'][strategy_name] = 0
-            self.stats['total_score'][strategy_name] = 0
-        
         normalized_score = (score / num_rounds) * 100  # Normalize to 100 rounds
-        self.stats['games_played'][strategy_name] += 1
-        self.stats['total_score'][strategy_name] += normalized_score
-        self._save_stats()
-    
+
+        # Get or create strategy performance record
+        performance = (
+            self.db.query(StrategyPerformance)
+            .filter(StrategyPerformance.strategy_name == strategy_name)
+            .first()
+        )
+
+        if not performance:
+            performance = StrategyPerformance(strategy_name=strategy_name)
+            self.db.add(performance)
+
+        # Update performance metrics
+        performance.total_games += 1
+        performance.total_score += normalized_score
+        performance.avg_score_per_round = performance.total_score / performance.total_games
+
+        # Update cooperation rate as moving average
+        if cooperation_rate is not None:
+            current_total = performance.avg_cooperation_rate * (performance.total_games - 1)
+            performance.avg_cooperation_rate = (current_total + cooperation_rate) / performance.total_games
+
+        performance.last_updated = datetime.utcnow()
+
+        self.db.commit()
+
     def get_average_scores(self) -> Dict[str, float]:
         """Get average normalized scores for each strategy"""
-        avg_scores = {}
-        for strategy in self.stats['games_played']:
-            if self.stats['games_played'][strategy] > 0:
-                avg_scores[strategy] = (
-                    self.stats['total_score'][strategy] / 
-                    self.stats['games_played'][strategy]
-                )
-        return avg_scores
+        performances = self.db.query(StrategyPerformance).all()
+        return {p.strategy_name: p.avg_score_per_round for p in performances}
+
+    def record_game(self, results: Dict, strategy1_name: str, strategy2_name: str):
+        """Record a complete game in the database"""
+        game = Game(
+            strategy1_name=strategy1_name,
+            strategy2_name=strategy2_name,
+            score1=results['final_score1'],
+            score2=results['final_score2'],
+            total_rounds=results['total_rounds'],
+            cooperation_rate1=results['cooperation_rate1'],
+            cooperation_rate2=results['cooperation_rate2']
+        )
+        self.db.add(game)
+        self.db.commit()

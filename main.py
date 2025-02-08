@@ -5,6 +5,10 @@ from strategies import get_all_strategies
 from game_logic import PrisonersDilemma
 from visualizations import create_score_plot, create_cooperation_plot, create_historical_performance_plot
 from strategy_stats import StrategyStats
+from models import init_db
+
+# Initialize database
+init_db()
 
 st.set_page_config(
     page_title="Prisoner's Dilemma Simulator",
@@ -75,9 +79,20 @@ def main():
         # Run tournament
         results = game.run_tournament(player_strategy, opponent)
 
-        # Update strategy stats
-        stats_manager.update_stats(selected_strategy, results['final_score1'], results['total_rounds'])
-        stats_manager.update_stats(opponent.name, results['final_score2'], results['total_rounds'])
+        # Update strategy stats and record game
+        stats_manager.update_stats(
+            selected_strategy, 
+            results['final_score1'], 
+            results['total_rounds'],
+            results['cooperation_rate1']
+        )
+        stats_manager.update_stats(
+            opponent.name, 
+            results['final_score2'], 
+            results['total_rounds'],
+            results['cooperation_rate2']
+        )
+        stats_manager.record_game(results, selected_strategy, opponent.name)
 
         # Display opponent's strategy
         st.subheader("Opponent's Strategy")
@@ -137,15 +152,25 @@ def main():
         for i, opponent_strategy in enumerate(strategies):
             status_text.text(f"Playing against {opponent_strategy.name}...")
 
-            # Run 1000 games instead of 100 against current strategy
             for _ in range(1000):
                 player_strategy = player_strategy_class()
                 opponent = type(opponent_strategy)()
                 results = game.run_tournament(player_strategy, opponent)
 
-                # Update stats for both strategies
-                stats_manager.update_stats(selected_strategy, results['final_score1'], results['total_rounds'])
-                stats_manager.update_stats(opponent.name, results['final_score2'], results['total_rounds'])
+                # Update stats and record game
+                stats_manager.update_stats(
+                    selected_strategy, 
+                    results['final_score1'], 
+                    results['total_rounds'],
+                    results['cooperation_rate1']
+                )
+                stats_manager.update_stats(
+                    opponent.name, 
+                    results['final_score2'], 
+                    results['total_rounds'],
+                    results['cooperation_rate2']
+                )
+                stats_manager.record_game(results, selected_strategy, opponent.name)
 
             # Update progress
             progress_bar.progress((i + 1) / total_strategies)
