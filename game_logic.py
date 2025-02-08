@@ -1,5 +1,6 @@
 from typing import Tuple, List, Dict
 import numpy as np
+import random
 from strategies import Strategy
 
 class PrisonersDilemma:
@@ -11,28 +12,36 @@ class PrisonersDilemma:
             (False, True): (5, 0),   # Row defects, Col cooperates
             (False, False): (1, 1)   # Both defect
         }
+        self.MAX_ITERATIONS = 1000  # Safety limit
 
     def play_round(self, strategy1: Strategy, strategy2: Strategy) -> Tuple[int, int]:
         choice1 = strategy1.make_choice()
         choice2 = strategy2.make_choice()
-        
+
         strategy1.update_history(choice1, choice2)
         strategy2.update_history(choice2, choice1)
-        
+
         return self.payoff_matrix[(choice1, choice2)]
 
-    def run_tournament(self, strategy1: Strategy, strategy2: Strategy, iterations: int) -> Dict:
+    def run_tournament(self, strategy1: Strategy, strategy2: Strategy) -> Dict:
         scores1 = []
         scores2 = []
         cumulative1 = 0
         cumulative2 = 0
+        iterations = 0
 
-        for _ in range(iterations):
+        # Continue until random end condition or max iterations
+        while iterations < self.MAX_ITERATIONS:
             score1, score2 = self.play_round(strategy1, strategy2)
             cumulative1 += score1
             cumulative2 += score2
             scores1.append(cumulative1)
             scores2.append(cumulative2)
+            iterations += 1
+
+            # 0.3% chance of ending after each move
+            if random.random() < 0.003:
+                break
 
         return {
             'scores1': scores1,
@@ -40,5 +49,6 @@ class PrisonersDilemma:
             'final_score1': cumulative1,
             'final_score2': cumulative2,
             'cooperation_rate1': sum(strategy1.history) / len(strategy1.history),
-            'cooperation_rate2': sum(strategy2.history) / len(strategy2.history)
+            'cooperation_rate2': sum(strategy2.history) / len(strategy2.history),
+            'total_rounds': iterations
         }
