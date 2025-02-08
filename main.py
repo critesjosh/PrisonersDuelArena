@@ -143,16 +143,27 @@ def main():
         analysis_df = pd.DataFrame({
             'Metric': ['Total Score', 'Average Score per Round', 'Cooperation Rate'],
             'Your Strategy': [
-                results['final_score1'],
+                int(results['final_score1']),
                 round(results['final_score1'] / results['total_rounds'], 2),
-                f"{results['cooperation_rate1']:.1%}"
+                round(results['cooperation_rate1'] * 100, 1)  # Store as numeric value
             ],
             'Opponent Strategy': [
-                results['final_score2'],
+                int(results['final_score2']),
                 round(results['final_score2'] / results['total_rounds'], 2),
-                f"{results['cooperation_rate2']:.1%}"
+                round(results['cooperation_rate2'] * 100, 1)  # Store as numeric value
             ]
         })
+
+        # Format the cooperation rate after DataFrame creation
+        analysis_df['Your Strategy'] = analysis_df.apply(
+            lambda x: f"{x['Your Strategy']}%" if x['Metric'] == 'Cooperation Rate' else x['Your Strategy'],
+            axis=1
+        )
+        analysis_df['Opponent Strategy'] = analysis_df.apply(
+            lambda x: f"{x['Opponent Strategy']}%" if x['Metric'] == 'Cooperation Rate' else x['Opponent Strategy'],
+            axis=1
+        )
+
         st.table(analysis_df)
 
     elif multi_game:
