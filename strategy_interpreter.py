@@ -60,19 +60,35 @@ class StrategyInterpreter:
             strategy_text = strategy_text.lower().strip()
 
             print(f"\n[Strategy Interpreter] Analyzing strategy: '{strategy_text}'")
+            print("[Strategy Interpreter] Preparing OpenAI request...")
+
+            messages = [
+                {"role": "system", "content": self.system_prompt},
+                {"role": "user", "content": f"Interpret this strategy: {strategy_text}"}
+            ]
+
+            print("[Strategy Interpreter] OpenAI Request:")
+            print(f"  Model: gpt-3.5-turbo")
+            print(f"  Temperature: 0.1")
+            print(f"  Messages:")
+            for msg in messages:
+                print(f"    - {msg['role']}: {msg['content'][:100]}...")
 
             response = self.client.chat.completions.create(
                 model="gpt-3.5-turbo",
-                messages=[
-                    {"role": "system", "content": self.system_prompt},
-                    {"role": "user", "content": f"Interpret this strategy: {strategy_text}"}
-                ],
+                messages=messages,
                 response_format={"type": "json_object"},
                 temperature=0.1  # Lower temperature for more consistent results
             )
 
+            print("\n[Strategy Interpreter] OpenAI Response:")
+            print(f"  Response ID: {response.id}")
+            print(f"  Model used: {response.model}")
+            print(f"  Raw content: {response.choices[0].message.content}")
+
             interpreted_strategy = json.loads(response.choices[0].message.content)
-            print(f"[Strategy Interpreter] Raw interpretation: {interpreted_strategy}")
+            print(f"\n[Strategy Interpreter] Parsed interpretation:")
+            print(json.dumps(interpreted_strategy, indent=2))
 
             # Validate and clean up the interpretation
             if not isinstance(interpreted_strategy, dict):
@@ -83,6 +99,8 @@ class StrategyInterpreter:
 
             strategy_type = interpreted_strategy["type"]
             pattern = interpreted_strategy["pattern"]
+
+            print(f"\n[Strategy Interpreter] Validating {strategy_type} pattern...")
 
             if strategy_type == "sequence":
                 if "cooperate_count" not in pattern or "defect_count" not in pattern:
@@ -112,9 +130,13 @@ class StrategyInterpreter:
             else:
                 raise ValueError(f"Unsupported strategy type: {strategy_type}")
 
+            print("\n[Strategy Interpreter] Strategy interpretation completed successfully")
             return interpreted_strategy
 
         except Exception as e:
-            print(f"[Strategy Interpreter] Error: {str(e)}")
+            print(f"\n[Strategy Interpreter] Error occurred:")
+            print(f"  Type: {type(e).__name__}")
+            print(f"  Message: {str(e)}")
+            print("  Falling back to default cooperation strategy")
             # Fallback to basic cooperation
             return {"type": "simple", "pattern": {"action": "cooperate"}}
