@@ -23,9 +23,9 @@ class StrategyInterpreter:
             IMPORTANT:
             - Numbers can be written as words (e.g., "ten" = 10)
             - Look for keywords: "moves", "rounds", "times", "then", "alternate", "copy"
-            - If a strategy starts with a sequence and then changes (e.g., "cooperate X times then copy"),
-              interpret it as a conditional pattern with initial_cooperation count
-            - Default to "simple" type only if no clear sequence or condition is found
+            - Statistical strategies (e.g., "choose what opponent chose most often") should be converted to "copy opponent's last move"
+            - If a strategy involves complex logic, default to a conditional pattern with "last_opponent_move"
+            - For simple strategies, only use: "cooperate", "defect", or "random"
 
             Return a JSON object following one of these formats:
 
@@ -47,11 +47,11 @@ class StrategyInterpreter:
                 }
             }
 
-            3. For basic patterns (e.g., "always cooperate"):
+            3. For basic patterns (e.g., "always cooperate", "always defect", "random"):
             {
                 "type": "simple",
                 "pattern": {
-                    "action": "cooperate" | "defect" | "random"
+                    "action": "cooperate" | "defect" | "random"  // Only these three values are allowed
                 }
             }
 
@@ -64,6 +64,12 @@ class StrategyInterpreter:
 
             - Input: "do what opponent did last"
               Output: {"type": "conditional", "pattern": {"condition": "last_opponent_move", "initial_cooperation": 0}}
+
+            - Input: "choose what opponent chose most often"
+              Output: {"type": "conditional", "pattern": {"condition": "last_opponent_move", "initial_cooperation": 0}}
+
+            - Input: "always cooperate"
+              Output: {"type": "simple", "pattern": {"action": "cooperate"}}
             """
 
     def get_cached_interpretation(self, strategy_text: str) -> Optional[Dict]:
@@ -158,7 +164,16 @@ class StrategyInterpreter:
 
             elif strategy_type == "simple":
                 if pattern.get("action") not in ["cooperate", "defect", "random"]:
-                    raise ValueError("Invalid simple action")
+                    # Convert unsupported actions to conditional pattern
+                    print(f"[Strategy Interpreter] Converting unsupported action to conditional pattern")
+                    return {
+                        "type": "conditional",
+                        "pattern": {
+                            "condition": "last_opponent_move",
+                            "initial_cooperation": 0
+                        }
+                    }
+
                 print(f"[Strategy Interpreter] Validated simple pattern: {pattern['action']}")
 
             else:
