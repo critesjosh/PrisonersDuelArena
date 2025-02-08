@@ -23,8 +23,18 @@ class CustomStrategy(Strategy):
     interpreter = StrategyInterpreter()
 
     def __init__(self, name: str = None, description: str = None, logic: str = None):
-        super().__init__(name or 'Custom Strategy', description or 'A custom strategy')
-        self.logic = logic.lower() if logic else 'always cooperate'
+        # Get class-level attributes if they exist
+        class_name = getattr(self, 'name', None)
+        class_description = getattr(self, 'description', None)
+        class_logic = getattr(self, 'logic', None)
+
+        # Use class attributes first, then parameters, then defaults
+        final_name = class_name or name or 'Custom Strategy'
+        final_description = class_description or description or 'A custom strategy'
+        final_logic = (class_logic or logic or 'always cooperate').lower()
+
+        super().__init__(final_name, final_description)
+        self.logic = final_logic
         self.move_counter = 0
 
         # Use AI to interpret the strategy
@@ -116,15 +126,13 @@ def add_custom_strategy(name: str, description: str, logic: str) -> CustomStrate
     strategy_class = type(
         f"CustomStrategy_{len(_custom_strategies)}",
         (CustomStrategy,),
-        {}
+        {
+            'name': name,
+            'description': description,
+            'logic': logic
+        }
     )
-    # Store the parameters in the class
-    strategy_class.instances[strategy_class.__name__] = {
-        'name': name,
-        'description': description,
-        'logic': logic
-    }
-    strategy = strategy_class()
+    strategy = strategy_class(name=name, description=description, logic=logic)
     _custom_strategies.append(strategy)
     return strategy
 
