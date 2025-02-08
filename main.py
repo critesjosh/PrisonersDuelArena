@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from strategies import get_all_strategies
+from strategies import get_all_strategies, TitForTat, AlwaysCooperate, AlwaysDefect, RandomStrategy
 from game_logic import PrisonersDilemma
 from visualizations import create_score_plot, create_cooperation_plot
 
