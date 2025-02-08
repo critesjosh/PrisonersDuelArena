@@ -22,8 +22,16 @@ class StrategyStats:
         )
 
         if not performance:
-            performance = StrategyPerformance(strategy_name=strategy_name)
+            # Initialize a new performance record with default values
+            performance = StrategyPerformance(
+                strategy_name=strategy_name,
+                total_games=0,
+                total_score=0.0,
+                avg_score_per_round=0.0,
+                avg_cooperation_rate=0.0
+            )
             self.db.add(performance)
+            self.db.commit()  # Commit to ensure the record exists
 
         # Update performance metrics
         performance.total_games += 1
@@ -36,7 +44,6 @@ class StrategyStats:
             performance.avg_cooperation_rate = (current_total + cooperation_rate) / performance.total_games
 
         performance.last_updated = datetime.utcnow()
-
         self.db.commit()
 
     def get_average_scores(self) -> Dict[str, float]:
