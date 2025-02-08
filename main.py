@@ -53,9 +53,20 @@ def main():
     # Get description from the strategy instance
     st.info([s for s in strategies if s.name == selected_strategy][0].description)
 
-    if st.button("Run Simulation"):
-        # Initialize game and player strategy
-        game = PrisonersDilemma()
+    # Create two columns for the simulation buttons
+    col1, col2 = st.columns(2)
+
+    with col1:
+        single_game = st.button("Run Single Game")
+
+    with col2:
+        multi_game = st.button("Run 100 Games Against All Strategies")
+
+    # Initialize game
+    game = PrisonersDilemma()
+
+    if single_game:
+        # Initialize player strategy
         player_strategy = strategy_dict[selected_strategy]()
 
         # Randomly select opponent strategy (including the possibility of same strategy)
@@ -120,6 +131,41 @@ def main():
             ]
         })
         st.table(analysis_df)
+
+    elif multi_game:
+        st.subheader("Running Multiple Games")
+        progress_bar = st.progress(0)
+        status_text = st.empty()
+
+        # Initialize player strategy
+        player_strategy_class = strategy_dict[selected_strategy]
+        total_strategies = len(strategies)
+
+        for i, opponent_strategy in enumerate(strategies):
+            status_text.text(f"Playing against {opponent_strategy.name}...")
+
+            # Run 100 games against current strategy
+            for _ in range(100):
+                player_strategy = player_strategy_class()
+                opponent = type(opponent_strategy)()
+                results = game.run_tournament(player_strategy, opponent)
+
+                # Update stats for both strategies
+                stats_manager.update_stats(selected_strategy, results['final_score1'], results['total_rounds'])
+                stats_manager.update_stats(opponent.name, results['final_score2'], results['total_rounds'])
+
+            # Update progress
+            progress_bar.progress((i + 1) / total_strategies)
+
+        status_text.text("Finished running all games!")
+
+        # Display updated historical performance
+        st.subheader("Updated Historical Performance")
+        avg_scores = stats_manager.get_average_scores()
+        st.plotly_chart(
+            create_historical_performance_plot(avg_scores),
+            use_container_width=True
+        )
 
 if __name__ == "__main__":
     main()
