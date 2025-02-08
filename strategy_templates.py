@@ -15,7 +15,7 @@ def get_basic_templates() -> List[StrategyTemplate]:
         StrategyTemplate(
             name="Alternating Pattern",
             description="Alternates between cooperation and defection in a fixed pattern",
-            logic="10 then 10",
+            logic="cooperate 10 moves then defect 10 moves",
             category="Pattern-based",
             complexity="Basic",
             example_usage="Cooperates for 10 moves, then defects for 10 moves"

@@ -7,19 +7,24 @@ class StrategyInterpreter:
     def __init__(self):
         self.client = OpenAI()
         self.system_prompt = """
-        You are a Prisoner's Dilemma strategy interpreter. Analyze the given strategy description
-        and return a JSON object that strictly follows this structure for the pattern types:
+        You are a Prisoner's Dilemma strategy interpreter. Your task is to analyze strategy descriptions
+        and convert them into a structured format. Pay special attention to sequence patterns.
 
-        For sequence patterns (e.g. "10 then 10", "cooperate 5 then defect 5"):
+        Return a JSON object that strictly follows these formats:
+
+        1. For sequence patterns:
+        - Triggered by phrases like "X moves then Y moves", "cooperate X then defect Y"
+        - Example: "cooperate 10 moves then defect 10 moves" should be interpreted as:
         {
             "type": "sequence",
             "pattern": {
-                "cooperate_count": <number>,
-                "defect_count": <number>
+                "cooperate_count": 10,
+                "defect_count": 10
             }
         }
 
-        For conditional patterns (e.g. "copy opponent's last move"):
+        2. For conditional patterns:
+        - Triggered by phrases about responding to opponent's moves
         {
             "type": "conditional",
             "pattern": {
@@ -27,7 +32,7 @@ class StrategyInterpreter:
             }
         }
 
-        For simple patterns (e.g. "always cooperate", "always defect", "random"):
+        3. For simple patterns:
         {
             "type": "simple",
             "pattern": {
@@ -35,7 +40,11 @@ class StrategyInterpreter:
             }
         }
 
-        Important: For patterns like "X then Y", always interpret as sequence type with cooperate_count=X and defect_count=Y
+        IMPORTANT: 
+        - Always check for numbers followed by "moves", "rounds", or similar terms
+        - For alternating patterns, always use the sequence type
+        - Numbers can be written as digits or words (e.g., "ten" = 10)
+        - Default to sequence type if any alternation or counting is mentioned
         """
 
     def interpret_strategy(self, strategy_text: str) -> Dict:
@@ -50,13 +59,18 @@ class StrategyInterpreter:
             )
 
             interpreted_strategy = json.loads(response.choices[0].message.content)
-            print(f"AI interpreted strategy '{strategy_text}' as: {interpreted_strategy}")
+            print(f"[Strategy Interpreter] Input text: '{strategy_text}'")
+            print(f"[Strategy Interpreter] Interpreted as: {interpreted_strategy}")
 
             # Validate the response structure
             if interpreted_strategy["type"] == "sequence":
                 if "cooperate_count" not in interpreted_strategy["pattern"] or \
                    "defect_count" not in interpreted_strategy["pattern"]:
                     raise ValueError("Invalid sequence pattern structure")
+
+                # Ensure counts are integers
+                interpreted_strategy["pattern"]["cooperate_count"] = int(interpreted_strategy["pattern"]["cooperate_count"])
+                interpreted_strategy["pattern"]["defect_count"] = int(interpreted_strategy["pattern"]["defect_count"])
 
             return interpreted_strategy
 
