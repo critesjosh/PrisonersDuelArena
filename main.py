@@ -1,3 +1,27 @@
+"""
+main.py
+
+This is the main entry point for the Prisoner's Dilemma Simulator application.
+It implements the Streamlit-based web interface and coordinates all the major
+components of the system.
+
+Key features:
+- Web-based user interface using Streamlit
+- Strategy creation and management
+- Game simulation and visualization
+- Tournament mode with multiple games
+- Real-time statistics and analysis
+- Strategy template browsing and usage
+- Custom strategy creation with AI interpretation
+
+The application allows users to:
+1. Create and test custom strategies
+2. Run single games or tournaments
+3. Analyze game results with visualizations
+4. Browse and use strategy templates
+5. Track historical performance
+"""
+
 import streamlit as st
 import pandas as pd
 import random

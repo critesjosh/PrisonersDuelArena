@@ -1,3 +1,24 @@
+"""
+strategy_templates.py
+
+This module provides a collection of pre-defined strategy templates for the Prisoner's
+Dilemma game. It offers players a variety of ready-to-use strategies of varying
+complexity levels.
+
+Features:
+- Basic templates for beginners
+- Intermediate templates for experienced players
+- Advanced templates for complex strategies
+- Template categorization and complexity ratings
+- Example usage documentation for each template
+
+Each template includes:
+- Name and description
+- Implementation logic
+- Category and complexity level
+- Example usage scenarios
+"""
+
 from dataclasses import dataclass
 from typing import List
 

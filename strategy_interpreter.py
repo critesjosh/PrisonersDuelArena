@@ -1,3 +1,23 @@
+"""
+strategy_interpreter.py
+
+This module provides AI-powered interpretation of natural language strategy descriptions
+for the Prisoner's Dilemma game. It uses OpenAI's GPT model to convert human-readable
+strategy descriptions into structured game logic.
+
+Key features:
+- Natural language processing of strategy descriptions
+- Conversion to structured game patterns
+- Strategy validation and error handling
+- Caching of interpreted strategies for performance
+- Fallback mechanisms for handling interpretation errors
+
+The StrategyInterpreter class supports three types of patterns:
+1. Sequence patterns (e.g., "cooperate 5 moves then defect 5 moves")
+2. Conditional patterns (e.g., "copy opponent's last move")
+3. Simple patterns (e.g., "always cooperate", "always defect", "random")
+"""
+
 import os
 import json
 from openai import OpenAI
