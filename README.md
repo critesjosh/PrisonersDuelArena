@@ -1,5 +1,26 @@
-streamlit run main.py --server.port 5000
+# Set your OpenAI API key in the environment
+   # This is required for strategy parsing functionality
    ```
+
+2. **Running the Application**:
+   ```bash
+   streamlit run main.py --server.port 5000
+   ```
+
+   The application will be available at `http://localhost:5000`
+
+## 🔧 Setup Requirements
+
+- Python 3.8+
+- PostgreSQL database (automatically configured through environment variables)
+- OpenAI API access for strategy parsing
+
+## ⚙️ Configuration
+
+1. **Environment Setup**:
+   - The application uses environment variables for configuration
+   - Database configuration is handled automatically
+   - OpenAI API key is required for strategy parsing (will be prompted during first run)
 
 2. **Database Configuration**:
    - The application uses PostgreSQL for storing game results and strategy statistics
