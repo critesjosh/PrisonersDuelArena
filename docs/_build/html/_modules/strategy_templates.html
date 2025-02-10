@@ -1,0 +1,228 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>strategy_templates &mdash; Prisoner&#39;s Dilemma Simulator 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Prisoner's Dilemma Simulator
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules/game_logic.html">Game Logic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/strategy_interpreter.html">Strategy Interpreter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/strategy_templates.html">Strategy Templates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/main.html">Main Application</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Prisoner's Dilemma Simulator</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">strategy_templates</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for strategy_templates</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">strategy_templates.py</span>
+
+<span class="sd">This module provides a collection of pre-defined strategy templates for the Prisoner&#39;s</span>
+<span class="sd">Dilemma game. It offers players a variety of ready-to-use strategies of varying</span>
+<span class="sd">complexity levels.</span>
+
+<span class="sd">Features:</span>
+<span class="sd">- Basic templates for beginners</span>
+<span class="sd">- Intermediate templates for experienced players</span>
+<span class="sd">- Advanced templates for complex strategies</span>
+<span class="sd">- Template categorization and complexity ratings</span>
+<span class="sd">- Example usage documentation for each template</span>
+
+<span class="sd">Each template includes:</span>
+<span class="sd">- Name and description</span>
+<span class="sd">- Implementation logic</span>
+<span class="sd">- Category and complexity level</span>
+<span class="sd">- Example usage scenarios</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span>
+
+<div class="viewcode-block" id="StrategyTemplate">
+<a class="viewcode-back" href="../modules/strategy_templates.html#strategy_templates.StrategyTemplate">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">StrategyTemplate</span><span class="p">:</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">logic</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">category</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">complexity</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># &quot;Basic&quot;, &quot;Intermediate&quot;, &quot;Advanced&quot;</span>
+    <span class="n">example_usage</span><span class="p">:</span> <span class="nb">str</span></div>
+
+
+<div class="viewcode-block" id="get_basic_templates">
+<a class="viewcode-back" href="../modules/strategy_templates.html#strategy_templates.get_basic_templates">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_basic_templates</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">StrategyTemplate</span><span class="p">]:</span>
+    <span class="k">return</span> <span class="p">[</span>
+        <span class="n">StrategyTemplate</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Alternating Pattern&quot;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Alternates between cooperation and defection in a fixed pattern&quot;</span><span class="p">,</span>
+            <span class="n">logic</span><span class="o">=</span><span class="s2">&quot;cooperate 10 moves then defect 10 moves&quot;</span><span class="p">,</span>
+            <span class="n">category</span><span class="o">=</span><span class="s2">&quot;Pattern-based&quot;</span><span class="p">,</span>
+            <span class="n">complexity</span><span class="o">=</span><span class="s2">&quot;Basic&quot;</span><span class="p">,</span>
+            <span class="n">example_usage</span><span class="o">=</span><span class="s2">&quot;Cooperates for 10 moves, then defects for 10 moves&quot;</span>
+        <span class="p">),</span>
+        <span class="n">StrategyTemplate</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Gradual Trust Builder&quot;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Starts cooperative and gradually becomes more cautious&quot;</span><span class="p">,</span>
+            <span class="n">logic</span><span class="o">=</span><span class="s2">&quot;cooperate first 3 moves then copy opponent&quot;</span><span class="p">,</span>
+            <span class="n">category</span><span class="o">=</span><span class="s2">&quot;Adaptive&quot;</span><span class="p">,</span>
+            <span class="n">complexity</span><span class="o">=</span><span class="s2">&quot;Basic&quot;</span><span class="p">,</span>
+            <span class="n">example_usage</span><span class="o">=</span><span class="s2">&quot;Builds initial trust through cooperation&quot;</span>
+        <span class="p">),</span>
+        <span class="n">StrategyTemplate</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Forgiveness Strategy&quot;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Copies opponent but occasionally forgives defection&quot;</span><span class="p">,</span>
+            <span class="n">logic</span><span class="o">=</span><span class="s2">&quot;copy opponent but cooperate every 3rd move&quot;</span><span class="p">,</span>
+            <span class="n">category</span><span class="o">=</span><span class="s2">&quot;Psychological&quot;</span><span class="p">,</span>
+            <span class="n">complexity</span><span class="o">=</span><span class="s2">&quot;Basic&quot;</span><span class="p">,</span>
+            <span class="n">example_usage</span><span class="o">=</span><span class="s2">&quot;Balance between retaliation and forgiveness&quot;</span>
+        <span class="p">)</span>
+    <span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="get_intermediate_templates">
+<a class="viewcode-back" href="../modules/strategy_templates.html#strategy_templates.get_intermediate_templates">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_intermediate_templates</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">StrategyTemplate</span><span class="p">]:</span>
+    <span class="k">return</span> <span class="p">[</span>
+        <span class="n">StrategyTemplate</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Majority Rule&quot;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Bases decisions on opponent&#39;s most common choice&quot;</span><span class="p">,</span>
+            <span class="n">logic</span><span class="o">=</span><span class="s2">&quot;choose what opponent chose most often&quot;</span><span class="p">,</span>
+            <span class="n">category</span><span class="o">=</span><span class="s2">&quot;Statistical&quot;</span><span class="p">,</span>
+            <span class="n">complexity</span><span class="o">=</span><span class="s2">&quot;Intermediate&quot;</span><span class="p">,</span>
+            <span class="n">example_usage</span><span class="o">=</span><span class="s2">&quot;Adapts to opponent&#39;s dominant strategy&quot;</span>
+        <span class="p">),</span>
+        <span class="n">StrategyTemplate</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Pattern Detector&quot;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Tries to detect and exploit patterns in opponent&#39;s moves&quot;</span><span class="p">,</span>
+            <span class="n">logic</span><span class="o">=</span><span class="s2">&quot;detect opponent pattern and counter&quot;</span><span class="p">,</span>
+            <span class="n">category</span><span class="o">=</span><span class="s2">&quot;Analytical&quot;</span><span class="p">,</span>
+            <span class="n">complexity</span><span class="o">=</span><span class="s2">&quot;Intermediate&quot;</span><span class="p">,</span>
+            <span class="n">example_usage</span><span class="o">=</span><span class="s2">&quot;Good against predictable strategies&quot;</span>
+        <span class="p">)</span>
+    <span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="get_advanced_templates">
+<a class="viewcode-back" href="../modules/strategy_templates.html#strategy_templates.get_advanced_templates">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_advanced_templates</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">StrategyTemplate</span><span class="p">]:</span>
+    <span class="k">return</span> <span class="p">[</span>
+        <span class="n">StrategyTemplate</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Learning Algorithm&quot;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Adjusts strategy based on success of previous moves&quot;</span><span class="p">,</span>
+            <span class="n">logic</span><span class="o">=</span><span class="s2">&quot;learn from past interactions and optimize&quot;</span><span class="p">,</span>
+            <span class="n">category</span><span class="o">=</span><span class="s2">&quot;Machine Learning&quot;</span><span class="p">,</span>
+            <span class="n">complexity</span><span class="o">=</span><span class="s2">&quot;Advanced&quot;</span><span class="p">,</span>
+            <span class="n">example_usage</span><span class="o">=</span><span class="s2">&quot;Evolves strategy throughout the game&quot;</span>
+        <span class="p">),</span>
+        <span class="n">StrategyTemplate</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Game Theory Optimal&quot;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Implements optimal strategy based on game theory principles&quot;</span><span class="p">,</span>
+            <span class="n">logic</span><span class="o">=</span><span class="s2">&quot;calculate nash equilibrium and play accordingly&quot;</span><span class="p">,</span>
+            <span class="n">category</span><span class="o">=</span><span class="s2">&quot;Theoretical&quot;</span><span class="p">,</span>
+            <span class="n">complexity</span><span class="o">=</span><span class="s2">&quot;Advanced&quot;</span><span class="p">,</span>
+            <span class="n">example_usage</span><span class="o">=</span><span class="s2">&quot;Maximizes expected value against rational opponents&quot;</span>
+        <span class="p">)</span>
+    <span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="get_all_templates">
+<a class="viewcode-back" href="../modules/strategy_templates.html#strategy_templates.get_all_templates">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_all_templates</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">StrategyTemplate</span><span class="p">]:</span>
+    <span class="k">return</span> <span class="n">get_basic_templates</span><span class="p">()</span> <span class="o">+</span> <span class="n">get_intermediate_templates</span><span class="p">()</span> <span class="o">+</span> <span class="n">get_advanced_templates</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="get_template_by_name">
+<a class="viewcode-back" href="../modules/strategy_templates.html#strategy_templates.get_template_by_name">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_template_by_name</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StrategyTemplate</span><span class="p">:</span>
+    <span class="k">return</span> <span class="nb">next</span><span class="p">((</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">get_all_templates</span><span class="p">()</span> <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">name</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 1980, Replit.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

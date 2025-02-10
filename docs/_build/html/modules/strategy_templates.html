@@ -1,0 +1,265 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Strategy Templates &mdash; Prisoner&#39;s Dilemma Simulator 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Main Application" href="main.html" />
+    <link rel="prev" title="Strategy Interpreter" href="strategy_interpreter.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Prisoner's Dilemma Simulator
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="game_logic.html">Game Logic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="strategy_interpreter.html">Strategy Interpreter</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Strategy Templates</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#strategy_templates.StrategyTemplate"><code class="docutils literal notranslate"><span class="pre">StrategyTemplate</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#strategy_templates.StrategyTemplate.name"><code class="docutils literal notranslate"><span class="pre">StrategyTemplate.name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#strategy_templates.StrategyTemplate.description"><code class="docutils literal notranslate"><span class="pre">StrategyTemplate.description</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#strategy_templates.StrategyTemplate.logic"><code class="docutils literal notranslate"><span class="pre">StrategyTemplate.logic</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#strategy_templates.StrategyTemplate.category"><code class="docutils literal notranslate"><span class="pre">StrategyTemplate.category</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#strategy_templates.StrategyTemplate.complexity"><code class="docutils literal notranslate"><span class="pre">StrategyTemplate.complexity</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#strategy_templates.StrategyTemplate.example_usage"><code class="docutils literal notranslate"><span class="pre">StrategyTemplate.example_usage</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#strategy_templates.StrategyTemplate.__init__"><code class="docutils literal notranslate"><span class="pre">StrategyTemplate.__init__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#strategy_templates.get_basic_templates"><code class="docutils literal notranslate"><span class="pre">get_basic_templates()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#strategy_templates.get_intermediate_templates"><code class="docutils literal notranslate"><span class="pre">get_intermediate_templates()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#strategy_templates.get_advanced_templates"><code class="docutils literal notranslate"><span class="pre">get_advanced_templates()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#strategy_templates.get_all_templates"><code class="docutils literal notranslate"><span class="pre">get_all_templates()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#strategy_templates.get_template_by_name"><code class="docutils literal notranslate"><span class="pre">get_template_by_name()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="main.html">Main Application</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Prisoner's Dilemma Simulator</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Strategy Templates</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/modules/strategy_templates.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="strategy-templates">
+<h1>Strategy Templates<a class="headerlink" href="#strategy-templates" title="Link to this heading"></a></h1>
+<p id="module-strategy_templates">strategy_templates.py</p>
+<p>This module provides a collection of pre-defined strategy templates for the Prisoner’s
+Dilemma game. It offers players a variety of ready-to-use strategies of varying
+complexity levels.</p>
+<p>Features:
+- Basic templates for beginners
+- Intermediate templates for experienced players
+- Advanced templates for complex strategies
+- Template categorization and complexity ratings
+- Example usage documentation for each template</p>
+<p>Each template includes:
+- Name and description
+- Implementation logic
+- Category and complexity level
+- Example usage scenarios</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="strategy_templates.StrategyTemplate">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">StrategyTemplate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logic</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">category</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">complexity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">example_usage</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/strategy_templates.html#StrategyTemplate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#strategy_templates.StrategyTemplate" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>)</p></li>
+<li><p><strong>description</strong> (<em>str</em>)</p></li>
+<li><p><strong>logic</strong> (<em>str</em>)</p></li>
+<li><p><strong>category</strong> (<em>str</em>)</p></li>
+<li><p><strong>complexity</strong> (<em>str</em>)</p></li>
+<li><p><strong>example_usage</strong> (<em>str</em>)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="strategy_templates.StrategyTemplate.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></em><a class="headerlink" href="#strategy_templates.StrategyTemplate.name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="strategy_templates.StrategyTemplate.description">
+<span class="sig-name descname"><span class="pre">description</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></em><a class="headerlink" href="#strategy_templates.StrategyTemplate.description" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="strategy_templates.StrategyTemplate.logic">
+<span class="sig-name descname"><span class="pre">logic</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></em><a class="headerlink" href="#strategy_templates.StrategyTemplate.logic" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="strategy_templates.StrategyTemplate.category">
+<span class="sig-name descname"><span class="pre">category</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></em><a class="headerlink" href="#strategy_templates.StrategyTemplate.category" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="strategy_templates.StrategyTemplate.complexity">
+<span class="sig-name descname"><span class="pre">complexity</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></em><a class="headerlink" href="#strategy_templates.StrategyTemplate.complexity" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="strategy_templates.StrategyTemplate.example_usage">
+<span class="sig-name descname"><span class="pre">example_usage</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></em><a class="headerlink" href="#strategy_templates.StrategyTemplate.example_usage" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="strategy_templates.StrategyTemplate.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logic</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">category</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">complexity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">example_usage</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#strategy_templates.StrategyTemplate.__init__" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>)</p></li>
+<li><p><strong>description</strong> (<em>str</em>)</p></li>
+<li><p><strong>logic</strong> (<em>str</em>)</p></li>
+<li><p><strong>category</strong> (<em>str</em>)</p></li>
+<li><p><strong>complexity</strong> (<em>str</em>)</p></li>
+<li><p><strong>example_usage</strong> (<em>str</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="strategy_templates.get_basic_templates">
+<span class="sig-name descname"><span class="pre">get_basic_templates</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/strategy_templates.html#get_basic_templates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#strategy_templates.get_basic_templates" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#strategy_templates.StrategyTemplate" title="strategy_templates.StrategyTemplate"><code class="xref py py-class docutils literal notranslate"><span class="pre">StrategyTemplate</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="strategy_templates.get_intermediate_templates">
+<span class="sig-name descname"><span class="pre">get_intermediate_templates</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/strategy_templates.html#get_intermediate_templates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#strategy_templates.get_intermediate_templates" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#strategy_templates.StrategyTemplate" title="strategy_templates.StrategyTemplate"><code class="xref py py-class docutils literal notranslate"><span class="pre">StrategyTemplate</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="strategy_templates.get_advanced_templates">
+<span class="sig-name descname"><span class="pre">get_advanced_templates</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/strategy_templates.html#get_advanced_templates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#strategy_templates.get_advanced_templates" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#strategy_templates.StrategyTemplate" title="strategy_templates.StrategyTemplate"><code class="xref py py-class docutils literal notranslate"><span class="pre">StrategyTemplate</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="strategy_templates.get_all_templates">
+<span class="sig-name descname"><span class="pre">get_all_templates</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/strategy_templates.html#get_all_templates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#strategy_templates.get_all_templates" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#strategy_templates.StrategyTemplate" title="strategy_templates.StrategyTemplate"><code class="xref py py-class docutils literal notranslate"><span class="pre">StrategyTemplate</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="strategy_templates.get_template_by_name">
+<span class="sig-name descname"><span class="pre">get_template_by_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/strategy_templates.html#get_template_by_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#strategy_templates.get_template_by_name" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#strategy_templates.StrategyTemplate" title="strategy_templates.StrategyTemplate"><code class="xref py py-class docutils literal notranslate"><span class="pre">StrategyTemplate</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>name</strong> (<em>str</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="strategy_interpreter.html" class="btn btn-neutral float-left" title="Strategy Interpreter" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="main.html" class="btn btn-neutral float-right" title="Main Application" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 1980, Replit.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

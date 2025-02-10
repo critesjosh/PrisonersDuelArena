@@ -1,29 +1,43 @@
 """
 game_logic.py
 
-This module implements the core game mechanics for the Prisoner's Dilemma simulation.
-It handles:
-- Game rules and payoff matrix definition
-- Round-by-round gameplay implementation
-- Tournament execution and scoring
-- Player interaction tracking and statistics collection
+Core game mechanics for the Prisoner's Dilemma simulation. This module implements
+the fundamental rules, scoring, and tournament logic for the game.
 
-The PrisonersDilemma class provides methods for:
-- Running individual game rounds
-- Managing multi-round tournaments
-- Calculating and tracking scores
-- Recording player cooperation rates
+Key Features:
+- Payoff matrix definition and management
+- Game round execution and scoring
+- Tournament management with multiple rounds
+- Player interaction tracking
+- Statistics collection and analysis
+- Type-safe implementation with proper annotations
+
+Classes:
+    PrisonersDilemma: Main game engine that handles gameplay mechanics
+
+Types:
+    Choice: Type alias for True (cooperate) or False (defect)
+    PayoffMatrix: Type alias for the game's scoring matrix
+
+Example Usage:
+    game = PrisonersDilemma()
+    score1, score2 = game.play_round(strategy1, strategy2)
+    tournament_results = game.run_tournament(strategy1, strategy2)
 """
 
-from typing import Tuple, List, Dict
-import numpy as np
+from typing import Tuple, List, Dict, TypeVar, Literal
+import numpy as np  # Will be used for future statistical analysis
 import random
 from strategies import Strategy
+
+T = TypeVar('T')
+Choice = Literal[True, False]
+PayoffMatrix = Dict[Tuple[Choice, Choice], Tuple[int, int]]
 
 class PrisonersDilemma:
     def __init__(self):
         # Payoff matrix: (row_player_payoff, col_player_payoff)
-        self.payoff_matrix = {
+        self.payoff_matrix: PayoffMatrix = {
             (True, True): (3, 3),    # Both cooperate
             (True, False): (0, 5),   # Row cooperates, Col defects
             (False, True): (5, 0),   # Row defects, Col cooperates
@@ -32,17 +46,37 @@ class PrisonersDilemma:
         self.MAX_ITERATIONS = 1000  # Safety limit
 
     def play_round(self, strategy1: Strategy, strategy2: Strategy) -> Tuple[int, int]:
+        """Play a single round of the Prisoner's Dilemma
+
+        Args:
+            strategy1 (Strategy): First player's strategy
+            strategy2 (Strategy): Second player's strategy
+
+        Returns:
+            Tuple[int, int]: The scores for both players in this round
+        """
         choice1 = strategy1.make_choice()
         choice2 = strategy2.make_choice()
 
         strategy1.update_history(choice1, choice2)
         strategy2.update_history(choice2, choice1)
 
-        return self.payoff_matrix[(choice1, choice2)]
+        # Cast to Choice type to satisfy type checker
+        key: Tuple[Choice, Choice] = (bool(choice1), bool(choice2))
+        return self.payoff_matrix[key]
 
     def run_tournament(self, strategy1: Strategy, strategy2: Strategy) -> Dict:
-        scores1 = []
-        scores2 = []
+        """Run a complete tournament between two strategies
+
+        Args:
+            strategy1 (Strategy): First player's strategy
+            strategy2 (Strategy): Second player's strategy
+
+        Returns:
+            Dict: Tournament results including scores and statistics
+        """
+        scores1: List[int] = []
+        scores2: List[int] = []
         cumulative1 = 0
         cumulative2 = 0
         iterations = 0

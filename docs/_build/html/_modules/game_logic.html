@@ -1,0 +1,211 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>game_logic &mdash; Prisoner&#39;s Dilemma Simulator 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Prisoner's Dilemma Simulator
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules/game_logic.html">Game Logic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/strategy_interpreter.html">Strategy Interpreter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/strategy_templates.html">Strategy Templates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/main.html">Main Application</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Prisoner's Dilemma Simulator</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">game_logic</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for game_logic</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">game_logic.py</span>
+
+<span class="sd">This module implements the core game mechanics for the Prisoner&#39;s Dilemma simulation.</span>
+<span class="sd">It handles:</span>
+<span class="sd">- Game rules and payoff matrix definition</span>
+<span class="sd">- Round-by-round gameplay implementation</span>
+<span class="sd">- Tournament execution and scoring</span>
+<span class="sd">- Player interaction tracking and statistics collection</span>
+
+<span class="sd">The PrisonersDilemma class provides methods for:</span>
+<span class="sd">- Running individual game rounds</span>
+<span class="sd">- Managing multi-round tournaments</span>
+<span class="sd">- Calculating and tracking scores</span>
+<span class="sd">- Recording player cooperation rates</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Literal</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>  <span class="c1"># Will be used for future statistical analysis</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">strategies</span><span class="w"> </span><span class="kn">import</span> <span class="n">Strategy</span>
+
+<span class="n">T</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;T&#39;</span><span class="p">)</span>
+<span class="n">Choice</span> <span class="o">=</span> <span class="n">Literal</span><span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">]</span>
+<span class="n">PayoffMatrix</span> <span class="o">=</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Choice</span><span class="p">,</span> <span class="n">Choice</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span>
+
+<div class="viewcode-block" id="PrisonersDilemma">
+<a class="viewcode-back" href="../modules/game_logic.html#game_logic.PrisonersDilemma">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PrisonersDilemma</span><span class="p">:</span>
+<div class="viewcode-block" id="PrisonersDilemma.__init__">
+<a class="viewcode-back" href="../modules/game_logic.html#game_logic.PrisonersDilemma.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Payoff matrix: (row_player_payoff, col_player_payoff)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">payoff_matrix</span><span class="p">:</span> <span class="n">PayoffMatrix</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>    <span class="c1"># Both cooperate</span>
+            <span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>   <span class="c1"># Row cooperates, Col defects</span>
+            <span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>   <span class="c1"># Row defects, Col cooperates</span>
+            <span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>   <span class="c1"># Both defect</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">MAX_ITERATIONS</span> <span class="o">=</span> <span class="mi">1000</span>  <span class="c1"># Safety limit</span></div>
+
+
+<div class="viewcode-block" id="PrisonersDilemma.play_round">
+<a class="viewcode-back" href="../modules/game_logic.html#game_logic.PrisonersDilemma.play_round">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">play_round</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strategy1</span><span class="p">:</span> <span class="n">Strategy</span><span class="p">,</span> <span class="n">strategy2</span><span class="p">:</span> <span class="n">Strategy</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Play a single round of the Prisoner&#39;s Dilemma</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            strategy1 (Strategy): First player&#39;s strategy</span>
+<span class="sd">            strategy2 (Strategy): Second player&#39;s strategy</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Tuple[int, int]: The scores for both players in this round</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">choice1</span> <span class="o">=</span> <span class="n">strategy1</span><span class="o">.</span><span class="n">make_choice</span><span class="p">()</span>
+        <span class="n">choice2</span> <span class="o">=</span> <span class="n">strategy2</span><span class="o">.</span><span class="n">make_choice</span><span class="p">()</span>
+
+        <span class="n">strategy1</span><span class="o">.</span><span class="n">update_history</span><span class="p">(</span><span class="n">choice1</span><span class="p">,</span> <span class="n">choice2</span><span class="p">)</span>
+        <span class="n">strategy2</span><span class="o">.</span><span class="n">update_history</span><span class="p">(</span><span class="n">choice2</span><span class="p">,</span> <span class="n">choice1</span><span class="p">)</span>
+
+        <span class="c1"># Cast to Choice type to satisfy type checker</span>
+        <span class="n">key</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Choice</span><span class="p">,</span> <span class="n">Choice</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="nb">bool</span><span class="p">(</span><span class="n">choice1</span><span class="p">),</span> <span class="nb">bool</span><span class="p">(</span><span class="n">choice2</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">payoff_matrix</span><span class="p">[</span><span class="n">key</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="PrisonersDilemma.run_tournament">
+<a class="viewcode-back" href="../modules/game_logic.html#game_logic.PrisonersDilemma.run_tournament">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">run_tournament</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strategy1</span><span class="p">:</span> <span class="n">Strategy</span><span class="p">,</span> <span class="n">strategy2</span><span class="p">:</span> <span class="n">Strategy</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run a complete tournament between two strategies</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            strategy1 (Strategy): First player&#39;s strategy</span>
+<span class="sd">            strategy2 (Strategy): Second player&#39;s strategy</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Dict: Tournament results including scores and statistics</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">scores1</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">scores2</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">cumulative1</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">cumulative2</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">iterations</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># Continue until random end condition or max iterations</span>
+        <span class="k">while</span> <span class="n">iterations</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">MAX_ITERATIONS</span><span class="p">:</span>
+            <span class="n">score1</span><span class="p">,</span> <span class="n">score2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">play_round</span><span class="p">(</span><span class="n">strategy1</span><span class="p">,</span> <span class="n">strategy2</span><span class="p">)</span>
+            <span class="n">cumulative1</span> <span class="o">+=</span> <span class="n">score1</span>
+            <span class="n">cumulative2</span> <span class="o">+=</span> <span class="n">score2</span>
+            <span class="n">scores1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cumulative1</span><span class="p">)</span>
+            <span class="n">scores2</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cumulative2</span><span class="p">)</span>
+            <span class="n">iterations</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="c1"># 0.3% chance of ending after each move</span>
+            <span class="k">if</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mf">0.003</span><span class="p">:</span>
+                <span class="k">break</span>
+
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;scores1&#39;</span><span class="p">:</span> <span class="n">scores1</span><span class="p">,</span>
+            <span class="s1">&#39;scores2&#39;</span><span class="p">:</span> <span class="n">scores2</span><span class="p">,</span>
+            <span class="s1">&#39;final_score1&#39;</span><span class="p">:</span> <span class="n">cumulative1</span><span class="p">,</span>
+            <span class="s1">&#39;final_score2&#39;</span><span class="p">:</span> <span class="n">cumulative2</span><span class="p">,</span>
+            <span class="s1">&#39;cooperation_rate1&#39;</span><span class="p">:</span> <span class="nb">sum</span><span class="p">(</span><span class="n">strategy1</span><span class="o">.</span><span class="n">history</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">strategy1</span><span class="o">.</span><span class="n">history</span><span class="p">),</span>
+            <span class="s1">&#39;cooperation_rate2&#39;</span><span class="p">:</span> <span class="nb">sum</span><span class="p">(</span><span class="n">strategy2</span><span class="o">.</span><span class="n">history</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">strategy2</span><span class="o">.</span><span class="n">history</span><span class="p">),</span>
+            <span class="s1">&#39;total_rounds&#39;</span><span class="p">:</span> <span class="n">iterations</span>
+        <span class="p">}</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 1980, Replit.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
