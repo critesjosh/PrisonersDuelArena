@@ -1,5 +1,6 @@
 # Set your OpenAI API key in the environment
    # This is required for strategy parsing functionality
+   export OPENAI_API_KEY='your-api-key'
    ```
 
 2. **Running the Application**:
@@ -19,12 +20,32 @@
 
 1. **Environment Setup**:
    - The application uses environment variables for configuration
-   - Database configuration is handled automatically
-   - OpenAI API key is required for strategy parsing (will be prompted during first run)
+   - Required environment variables:
+     - `OPENAI_API_KEY`: Your OpenAI API key for strategy parsing
+     - `DATABASE_URL`: PostgreSQL connection string (automatically configured)
+   - OpenAI API key will be prompted during first run if not set
 
 2. **Database Configuration**:
-   - The application uses PostgreSQL for storing game results and strategy statistics
-   - Database configuration is handled automatically through environment variables
+   - The application uses PostgreSQL for storing:
+     - Game results
+     - Strategy statistics
+     - Historical performance data
+   - Database setup is handled automatically through the following process:
+     - Tables are created on first run
+     - Schemas are managed through SQLAlchemy migrations
+     - No manual database setup required
+   - Data stored includes:
+     - Game outcomes
+     - Strategy performance metrics
+     - Tournament results
+     - Player statistics
+
+3. **Infrastructure Components**:
+   - **Web Interface**: Streamlit-based dashboard
+   - **Database**: PostgreSQL for data persistence
+   - **AI Integration**: OpenAI GPT for strategy parsing
+   - **Analysis Engine**: Python-based simulation core
+   - **Visualization**: Plotly for interactive charts
 
 ## 📝 Creating Custom Strategies
 
