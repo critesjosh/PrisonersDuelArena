@@ -22,6 +22,9 @@ import os
 import json
 from openai import OpenAI
 from typing import Dict, Optional
+from dotenv import load_dotenv
+
+load_dotenv()
 
 class StrategyInterpreter:
     _instance = None
@@ -34,7 +37,7 @@ class StrategyInterpreter:
 
     def __init__(self):
         if not hasattr(self, 'initialized'):
-            self.client = OpenAI()
+            self.client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
             self.initialized = True
             self.system_prompt = """
             You are a Prisoner's Dilemma strategy interpreter. Your task is to convert strategy descriptions

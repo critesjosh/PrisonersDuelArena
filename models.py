@@ -31,7 +31,7 @@ class StrategyPerformance(Base):
     last_updated = Column(DateTime, default=datetime.utcnow)
 
 # Database connection
-engine = create_engine(os.environ['DATABASE_URL'])
+engine = create_engine(os.getenv('DATABASE_URL', 'sqlite:///game_data.db'))
 SessionLocal = sessionmaker(bind=engine)
 
 def init_db():

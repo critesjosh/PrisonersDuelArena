@@ -1,0 +1,5 @@
+.env
+venv
+.streamlit
+__pycache__
+game_data.db

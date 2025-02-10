@@ -1,1 +1,14 @@
-{"games_played": {"Tit for Tat": 9181, "Random": 4337, "Always Defect": 5202, "Always Cooperate": 3188}, "total_score": {"Tit for Tat": 2149727.908377543, "Random": 894617.7631979216, "Always Defect": 1034330.3848753345, "Always Cooperate": 659177.6357130568}}
+{
+  "games_played": {
+    "Tit for Tat": 9181,
+    "Random": 4337,
+    "Always Defect": 5202,
+    "Always Cooperate": 3188
+  },
+  "total_score": {
+    "Tit for Tat": 2149727.908377543,
+    "Random": 894617.7631979216,
+    "Always Defect": 1034330.3848753345,
+    "Always Cooperate": 659177.6357130568
+  }
+}
