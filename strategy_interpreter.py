@@ -21,7 +21,7 @@ The StrategyInterpreter class supports three types of patterns:
 import os
 import json
 from typing import Dict, Optional, Union, TypedDict, Literal
-from openai import OpenAI  # Updated import for latest OpenAI package
+import openai
 
 class StrategyPattern(TypedDict):
     type: Literal["sequence", "conditional", "simple"]
@@ -37,8 +37,10 @@ class StrategyInterpreter:
         return cls._instance
 
     def __init__(self):
+        """Initialize the StrategyInterpreter with OpenAI client and system prompt."""
         if not hasattr(self, 'initialized'):
-            self.client = OpenAI()
+            # Initialize OpenAI configuration
+            openai.api_key = os.getenv('OPENAI_API_KEY')
             self.initialized = True
             self.system_prompt = """
             You are a Prisoner's Dilemma strategy interpreter. Your task is to convert strategy descriptions
@@ -81,11 +83,26 @@ class StrategyInterpreter:
             """
 
     def get_cached_interpretation(self, strategy_text: str) -> Optional[StrategyPattern]:
-        """Get cached interpretation if it exists."""
+        """Get cached interpretation if it exists.
+
+        Args:
+            strategy_text (str): The strategy text to look up in cache
+
+        Returns:
+            Optional[StrategyPattern]: The cached strategy pattern if found, None otherwise
+        """
         return self._cache.get(strategy_text.lower().strip())
 
     def cache_interpretation(self, strategy_text: str, interpretation: StrategyPattern) -> None:
-        """Cache the interpretation for future use."""
+        """Cache the interpretation for future use.
+
+        Args:
+            strategy_text (str): The strategy text to cache
+            interpretation (StrategyPattern): The interpreted strategy pattern to cache
+
+        Returns:
+            None
+        """
         self._cache[strategy_text.lower().strip()] = interpretation
 
     def interpret_strategy(self, strategy_text: str) -> StrategyPattern:
@@ -110,7 +127,7 @@ class StrategyInterpreter:
             print(f"\n[Strategy Interpreter] Analyzing strategy: '{strategy_text}'")
             print("[Strategy Interpreter] Preparing OpenAI request...")
 
-            response = self.client.chat.completions.create(
+            response = openai.chat.completions.create(
                 model="gpt-3.5-turbo",
                 messages=[
                     {"role": "system", "content": self.system_prompt},

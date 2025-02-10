@@ -1,18 +1,28 @@
 """
 game_logic.py
 
-This module implements the core game mechanics for the Prisoner's Dilemma simulation.
-It handles:
-- Game rules and payoff matrix definition
-- Round-by-round gameplay implementation
-- Tournament execution and scoring
-- Player interaction tracking and statistics collection
+Core game mechanics for the Prisoner's Dilemma simulation. This module implements
+the fundamental rules, scoring, and tournament logic for the game.
 
-The PrisonersDilemma class provides methods for:
-- Running individual game rounds
-- Managing multi-round tournaments
-- Calculating and tracking scores
-- Recording player cooperation rates
+Key Features:
+- Payoff matrix definition and management
+- Game round execution and scoring
+- Tournament management with multiple rounds
+- Player interaction tracking
+- Statistics collection and analysis
+- Type-safe implementation with proper annotations
+
+Classes:
+    PrisonersDilemma: Main game engine that handles gameplay mechanics
+
+Types:
+    Choice: Type alias for True (cooperate) or False (defect)
+    PayoffMatrix: Type alias for the game's scoring matrix
+
+Example Usage:
+    game = PrisonersDilemma()
+    score1, score2 = game.play_round(strategy1, strategy2)
+    tournament_results = game.run_tournament(strategy1, strategy2)
 """
 
 from typing import Tuple, List, Dict, TypeVar, Literal

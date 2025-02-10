@@ -94,23 +94,34 @@
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpenAI</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">TypedDict</span><span class="p">,</span> <span class="n">Literal</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">openai</span>
+
+<div class="viewcode-block" id="StrategyPattern">
+<a class="viewcode-back" href="../modules/strategy_interpreter.html#strategy_interpreter.StrategyPattern">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">StrategyPattern</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+    <span class="nb">type</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;sequence&quot;</span><span class="p">,</span> <span class="s2">&quot;conditional&quot;</span><span class="p">,</span> <span class="s2">&quot;simple&quot;</span><span class="p">]</span>
+    <span class="n">pattern</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span></div>
+
 
 <div class="viewcode-block" id="StrategyInterpreter">
 <a class="viewcode-back" href="../modules/strategy_interpreter.html#strategy_interpreter.StrategyInterpreter">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">StrategyInterpreter</span><span class="p">:</span>
-    <span class="n">_instance</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">_cache</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># Class-level cache for interpreted strategies</span>
+    <span class="n">_instance</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;StrategyInterpreter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">_cache</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">StrategyPattern</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># Class-level cache for interpreted strategies</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;StrategyInterpreter&#39;</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_instance</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">cls</span><span class="o">.</span><span class="n">_instance</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">StrategyInterpreter</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_instance</span>
 
+<div class="viewcode-block" id="StrategyInterpreter.__init__">
+<a class="viewcode-back" href="../modules/strategy_interpreter.html#strategy_interpreter.StrategyInterpreter.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the StrategyInterpreter with OpenAI client and system prompt.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;initialized&#39;</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="n">OpenAI</span><span class="p">()</span>
+            <span class="c1"># Initialize OpenAI configuration</span>
+            <span class="n">openai</span><span class="o">.</span><span class="n">api_key</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;OPENAI_API_KEY&#39;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">initialized</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">system_prompt</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">            You are a Prisoner&#39;s Dilemma strategy interpreter. Your task is to convert strategy descriptions</span>
@@ -150,41 +161,49 @@
 <span class="s2">                    &quot;action&quot;: &quot;cooperate&quot; | &quot;defect&quot; | &quot;random&quot;  // Only these three values are allowed</span>
 <span class="s2">                }</span>
 <span class="s2">            }</span>
+<span class="s2">            &quot;&quot;&quot;</span></div>
 
-<span class="s2">            Examples:</span>
-<span class="s2">            - Input: &quot;cooperate first 3 moves then copy opponent&quot;</span>
-<span class="s2">              Output: {&quot;type&quot;: &quot;conditional&quot;, &quot;pattern&quot;: {&quot;condition&quot;: &quot;last_opponent_move&quot;, &quot;initial_cooperation&quot;: 3}}</span>
-
-<span class="s2">            - Input: &quot;cooperate 10 moves then defect 10 moves&quot;</span>
-<span class="s2">              Output: {&quot;type&quot;: &quot;sequence&quot;, &quot;pattern&quot;: {&quot;cooperate_count&quot;: 10, &quot;defect_count&quot;: 10}}</span>
-
-<span class="s2">            - Input: &quot;do what opponent did last&quot;</span>
-<span class="s2">              Output: {&quot;type&quot;: &quot;conditional&quot;, &quot;pattern&quot;: {&quot;condition&quot;: &quot;last_opponent_move&quot;, &quot;initial_cooperation&quot;: 0}}</span>
-
-<span class="s2">            - Input: &quot;choose what opponent chose most often&quot;</span>
-<span class="s2">              Output: {&quot;type&quot;: &quot;conditional&quot;, &quot;pattern&quot;: {&quot;condition&quot;: &quot;last_opponent_move&quot;, &quot;initial_cooperation&quot;: 0}}</span>
-
-<span class="s2">            - Input: &quot;always cooperate&quot;</span>
-<span class="s2">              Output: {&quot;type&quot;: &quot;simple&quot;, &quot;pattern&quot;: {&quot;action&quot;: &quot;cooperate&quot;}}</span>
-<span class="s2">            &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="StrategyInterpreter.get_cached_interpretation">
 <a class="viewcode-back" href="../modules/strategy_interpreter.html#strategy_interpreter.StrategyInterpreter.get_cached_interpretation">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_cached_interpretation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strategy_text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get cached interpretation if it exists.&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_cached_interpretation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strategy_text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">StrategyPattern</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get cached interpretation if it exists.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            strategy_text (str): The strategy text to look up in cache</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Optional[StrategyPattern]: The cached strategy pattern if found, None otherwise</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">strategy_text</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span></div>
 
 
 <div class="viewcode-block" id="StrategyInterpreter.cache_interpretation">
 <a class="viewcode-back" href="../modules/strategy_interpreter.html#strategy_interpreter.StrategyInterpreter.cache_interpretation">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">cache_interpretation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strategy_text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">interpretation</span><span class="p">:</span> <span class="n">Dict</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Cache the interpretation for future use.&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cache_interpretation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strategy_text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">interpretation</span><span class="p">:</span> <span class="n">StrategyPattern</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Cache the interpretation for future use.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            strategy_text (str): The strategy text to cache</span>
+<span class="sd">            interpretation (StrategyPattern): The interpreted strategy pattern to cache</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="n">strategy_text</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span> <span class="o">=</span> <span class="n">interpretation</span></div>
 
 
 <div class="viewcode-block" id="StrategyInterpreter.interpret_strategy">
 <a class="viewcode-back" href="../modules/strategy_interpreter.html#strategy_interpreter.StrategyInterpreter.interpret_strategy">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">interpret_strategy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strategy_text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">interpret_strategy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strategy_text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StrategyPattern</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Interpret a natural language strategy description into a structured pattern.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            strategy_text (str): The strategy description to interpret</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            StrategyPattern: A structured representation of the strategy</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># Check cache first</span>
             <span class="n">cached</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_cached_interpretation</span><span class="p">(</span><span class="n">strategy_text</span><span class="p">)</span>
@@ -198,21 +217,12 @@
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">[Strategy Interpreter] Analyzing strategy: &#39;</span><span class="si">{</span><span class="n">strategy_text</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[Strategy Interpreter] Preparing OpenAI request...&quot;</span><span class="p">)</span>
 
-            <span class="n">messages</span> <span class="o">=</span> <span class="p">[</span>
-                <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;system&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">system_prompt</span><span class="p">},</span>
-                <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Interpret this strategy: </span><span class="si">{</span><span class="n">strategy_text</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">}</span>
-            <span class="p">]</span>
-
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[Strategy Interpreter] OpenAI Request:&quot;</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Model: gpt-3.5-turbo&quot;</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Temperature: 0.1&quot;</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Messages:&quot;</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">msg</span> <span class="ow">in</span> <span class="n">messages</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    - </span><span class="si">{</span><span class="n">msg</span><span class="p">[</span><span class="s1">&#39;role&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">msg</span><span class="p">[</span><span class="s1">&#39;content&#39;</span><span class="p">][:</span><span class="mi">100</span><span class="p">]</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
-
-            <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">completions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">openai</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">completions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
                 <span class="n">model</span><span class="o">=</span><span class="s2">&quot;gpt-3.5-turbo&quot;</span><span class="p">,</span>
-                <span class="n">messages</span><span class="o">=</span><span class="n">messages</span><span class="p">,</span>
+                <span class="n">messages</span><span class="o">=</span><span class="p">[</span>
+                    <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;system&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">system_prompt</span><span class="p">},</span>
+                    <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Interpret this strategy: </span><span class="si">{</span><span class="n">strategy_text</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">}</span>
+                <span class="p">],</span>
                 <span class="n">response_format</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;json_object&quot;</span><span class="p">},</span>
                 <span class="n">temperature</span><span class="o">=</span><span class="mf">0.1</span>  <span class="c1"># Lower temperature for more consistent results</span>
             <span class="p">)</span>
@@ -223,53 +233,24 @@
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Raw content: </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">choices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">content</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
             <span class="n">interpreted_strategy</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">choices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">[Strategy Interpreter] Parsed interpretation:&quot;</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">interpreted_strategy</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
 
             <span class="c1"># Validate and clean up the interpretation</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interpreted_strategy</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid response format&quot;</span><span class="p">)</span>
-
             <span class="k">if</span> <span class="s2">&quot;type&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">interpreted_strategy</span> <span class="ow">or</span> <span class="s2">&quot;pattern&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">interpreted_strategy</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Missing required fields in response&quot;</span><span class="p">)</span>
 
             <span class="n">strategy_type</span> <span class="o">=</span> <span class="n">interpreted_strategy</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span>
             <span class="n">pattern</span> <span class="o">=</span> <span class="n">interpreted_strategy</span><span class="p">[</span><span class="s2">&quot;pattern&quot;</span><span class="p">]</span>
 
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">[Strategy Interpreter] Validating </span><span class="si">{</span><span class="n">strategy_type</span><span class="si">}</span><span class="s2"> pattern...&quot;</span><span class="p">)</span>
-
+            <span class="c1"># Type validation and conversion</span>
             <span class="k">if</span> <span class="n">strategy_type</span> <span class="o">==</span> <span class="s2">&quot;sequence&quot;</span><span class="p">:</span>
-                <span class="k">if</span> <span class="s2">&quot;cooperate_count&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">pattern</span> <span class="ow">or</span> <span class="s2">&quot;defect_count&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">pattern</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid sequence pattern structure&quot;</span><span class="p">)</span>
-
-                <span class="c1"># Convert to integers and validate</span>
                 <span class="n">pattern</span><span class="p">[</span><span class="s2">&quot;cooperate_count&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">pattern</span><span class="p">[</span><span class="s2">&quot;cooperate_count&quot;</span><span class="p">])</span>
                 <span class="n">pattern</span><span class="p">[</span><span class="s2">&quot;defect_count&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">pattern</span><span class="p">[</span><span class="s2">&quot;defect_count&quot;</span><span class="p">])</span>
-
-                <span class="k">if</span> <span class="n">pattern</span><span class="p">[</span><span class="s2">&quot;cooperate_count&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">pattern</span><span class="p">[</span><span class="s2">&quot;defect_count&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid sequence counts&quot;</span><span class="p">)</span>
-
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[Strategy Interpreter] Validated sequence pattern:&quot;</span><span class="p">)</span>
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - Cooperate count: </span><span class="si">{</span><span class="n">pattern</span><span class="p">[</span><span class="s1">&#39;cooperate_count&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - Defect count: </span><span class="si">{</span><span class="n">pattern</span><span class="p">[</span><span class="s1">&#39;defect_count&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
             <span class="k">elif</span> <span class="n">strategy_type</span> <span class="o">==</span> <span class="s2">&quot;conditional&quot;</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">pattern</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;condition&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="s2">&quot;last_opponent_move&quot;</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unsupported conditional pattern&quot;</span><span class="p">)</span>
-
-                <span class="c1"># Ensure initial_cooperation is present and valid</span>
-                <span class="k">if</span> <span class="s2">&quot;initial_cooperation&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">pattern</span><span class="p">:</span>
-                    <span class="n">pattern</span><span class="p">[</span><span class="s2">&quot;initial_cooperation&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-                <span class="n">pattern</span><span class="p">[</span><span class="s2">&quot;initial_cooperation&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">pattern</span><span class="p">[</span><span class="s2">&quot;initial_cooperation&quot;</span><span class="p">])</span>
-
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[Strategy Interpreter] Validated conditional pattern:&quot;</span><span class="p">)</span>
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - Condition: </span><span class="si">{</span><span class="n">pattern</span><span class="p">[</span><span class="s1">&#39;condition&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - Initial cooperation: </span><span class="si">{</span><span class="n">pattern</span><span class="p">[</span><span class="s1">&#39;initial_cooperation&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
+                <span class="n">pattern</span><span class="p">[</span><span class="s2">&quot;initial_cooperation&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">pattern</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;initial_cooperation&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
             <span class="k">elif</span> <span class="n">strategy_type</span> <span class="o">==</span> <span class="s2">&quot;simple&quot;</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">pattern</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;action&quot;</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;cooperate&quot;</span><span class="p">,</span> <span class="s2">&quot;defect&quot;</span><span class="p">,</span> <span class="s2">&quot;random&quot;</span><span class="p">]:</span>
-                    <span class="c1"># Convert unsupported actions to conditional pattern</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[Strategy Interpreter] Converting unsupported action to conditional pattern&quot;</span><span class="p">)</span>
                     <span class="k">return</span> <span class="p">{</span>
                         <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;conditional&quot;</span><span class="p">,</span>
                         <span class="s2">&quot;pattern&quot;</span><span class="p">:</span> <span class="p">{</span>
@@ -278,22 +259,12 @@
                         <span class="p">}</span>
                     <span class="p">}</span>
 
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[Strategy Interpreter] Validated simple pattern: </span><span class="si">{</span><span class="n">pattern</span><span class="p">[</span><span class="s1">&#39;action&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported strategy type: </span><span class="si">{</span><span class="n">strategy_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
             <span class="c1"># Cache the validated interpretation</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">cache_interpretation</span><span class="p">(</span><span class="n">strategy_text</span><span class="p">,</span> <span class="n">interpreted_strategy</span><span class="p">)</span>
-
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">[Strategy Interpreter] Strategy interpretation completed successfully&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">interpreted_strategy</span>
 
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">[Strategy Interpreter] Error occurred:&quot;</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Type: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Message: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  Falling back to default cooperation strategy&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">[Strategy Interpreter] Error occurred: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="c1"># Fallback to basic cooperation</span>
             <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;simple&quot;</span><span class="p">,</span> <span class="s2">&quot;pattern&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;cooperate&quot;</span><span class="p">}}</span></div>
 </div>

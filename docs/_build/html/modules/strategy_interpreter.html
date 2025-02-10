@@ -46,7 +46,13 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="game_logic.html">Game Logic</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Strategy Interpreter</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#strategy_interpreter.StrategyPattern"><code class="docutils literal notranslate"><span class="pre">StrategyPattern</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#strategy_interpreter.StrategyPattern.type"><code class="docutils literal notranslate"><span class="pre">StrategyPattern.type</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#strategy_interpreter.StrategyPattern.pattern"><code class="docutils literal notranslate"><span class="pre">StrategyPattern.pattern</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#strategy_interpreter.StrategyInterpreter"><code class="docutils literal notranslate"><span class="pre">StrategyInterpreter</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#strategy_interpreter.StrategyInterpreter.__init__"><code class="docutils literal notranslate"><span class="pre">StrategyInterpreter.__init__()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#strategy_interpreter.StrategyInterpreter.get_cached_interpretation"><code class="docutils literal notranslate"><span class="pre">StrategyInterpreter.get_cached_interpretation()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#strategy_interpreter.StrategyInterpreter.cache_interpretation"><code class="docutils literal notranslate"><span class="pre">StrategyInterpreter.cache_interpretation()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#strategy_interpreter.StrategyInterpreter.interpret_strategy"><code class="docutils literal notranslate"><span class="pre">StrategyInterpreter.interpret_strategy()</span></code></a></li>
@@ -99,19 +105,49 @@ strategy descriptions into structured game logic.</p>
 2. Conditional patterns (e.g., “copy opponent’s last move”)
 3. Simple patterns (e.g., “always cooperate”, “always defect”, “random”)</p>
 <dl class="py class">
+<dt class="sig sig-object py" id="strategy_interpreter.StrategyPattern">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">StrategyPattern</span></span><a class="reference internal" href="../_modules/strategy_interpreter.html#StrategyPattern"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#strategy_interpreter.StrategyPattern" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TypedDict</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="strategy_interpreter.StrategyPattern.type">
+<span class="sig-name descname"><span class="pre">type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code><span class="pre">[</span><code class="docutils literal notranslate"><span class="pre">'sequence'</span></code><span class="pre">,</span> <code class="docutils literal notranslate"><span class="pre">'conditional'</span></code><span class="pre">,</span> <code class="docutils literal notranslate"><span class="pre">'simple'</span></code><span class="pre">]</span></em><a class="headerlink" href="#strategy_interpreter.StrategyPattern.type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="strategy_interpreter.StrategyPattern.pattern">
+<span class="sig-name descname"><span class="pre">pattern</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code><span class="pre">[</span><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code><span class="pre">,</span> <code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code><span class="pre">[</span><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code><span class="pre">,</span> <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code><span class="pre">]]</span></em><a class="headerlink" href="#strategy_interpreter.StrategyPattern.pattern" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="strategy_interpreter.StrategyInterpreter">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">StrategyInterpreter</span></span><a class="reference internal" href="../_modules/strategy_interpreter.html#StrategyInterpreter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#strategy_interpreter.StrategyInterpreter" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#strategy_interpreter.StrategyInterpreter" title="strategy_interpreter.StrategyInterpreter">StrategyInterpreter</a></p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="strategy_interpreter.StrategyInterpreter.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/strategy_interpreter.html#StrategyInterpreter.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#strategy_interpreter.StrategyInterpreter.__init__" title="Link to this definition"></a></dt>
+<dd><p>Initialize the StrategyInterpreter with OpenAI client and system prompt.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="strategy_interpreter.StrategyInterpreter.get_cached_interpretation">
 <span class="sig-name descname"><span class="pre">get_cached_interpretation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">strategy_text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/strategy_interpreter.html#StrategyInterpreter.get_cached_interpretation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#strategy_interpreter.StrategyInterpreter.get_cached_interpretation" title="Link to this definition"></a></dt>
 <dd><p>Get cached interpretation if it exists.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>]</span></p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>strategy_text</strong> (<em>str</em>) – The strategy text to look up in cache</p>
 </dd>
-<dt class="field-even">Parameters<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>strategy_text</strong> (<em>str</em>)</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The cached strategy pattern if found, None otherwise</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Optional[<a class="reference internal" href="#strategy_interpreter.StrategyPattern" title="strategy_interpreter.StrategyPattern">StrategyPattern</a>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -123,9 +159,15 @@ strategy descriptions into structured game logic.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>strategy_text</strong> (<em>str</em>)</p></li>
-<li><p><strong>interpretation</strong> (<em>Dict</em>)</p></li>
+<li><p><strong>strategy_text</strong> (<em>str</em>) – The strategy text to cache</p></li>
+<li><p><strong>interpretation</strong> (<a class="reference internal" href="#strategy_interpreter.StrategyPattern" title="strategy_interpreter.StrategyPattern"><em>StrategyPattern</em></a>) – The interpreted strategy pattern to cache</p></li>
 </ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
 </dd>
 </dl>
 </dd></dl>
@@ -133,12 +175,16 @@ strategy descriptions into structured game logic.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="strategy_interpreter.StrategyInterpreter.interpret_strategy">
 <span class="sig-name descname"><span class="pre">interpret_strategy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">strategy_text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/strategy_interpreter.html#StrategyInterpreter.interpret_strategy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#strategy_interpreter.StrategyInterpreter.interpret_strategy" title="Link to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></span></p>
+<dd><p>Interpret a natural language strategy description into a structured pattern.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>strategy_text</strong> (<em>str</em>) – The strategy description to interpret</p>
 </dd>
-<dt class="field-even">Parameters<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>strategy_text</strong> (<em>str</em>)</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A structured representation of the strategy</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#strategy_interpreter.StrategyPattern" title="strategy_interpreter.StrategyPattern">StrategyPattern</a></p>
 </dd>
 </dl>
 </dd></dl>
