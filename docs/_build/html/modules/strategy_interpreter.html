@@ -1,0 +1,181 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Strategy Interpreter &mdash; Prisoner&#39;s Dilemma Simulator 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Strategy Templates" href="strategy_templates.html" />
+    <link rel="prev" title="Game Logic" href="game_logic.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Prisoner's Dilemma Simulator
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="game_logic.html">Game Logic</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Strategy Interpreter</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#strategy_interpreter.StrategyInterpreter"><code class="docutils literal notranslate"><span class="pre">StrategyInterpreter</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#strategy_interpreter.StrategyInterpreter.get_cached_interpretation"><code class="docutils literal notranslate"><span class="pre">StrategyInterpreter.get_cached_interpretation()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#strategy_interpreter.StrategyInterpreter.cache_interpretation"><code class="docutils literal notranslate"><span class="pre">StrategyInterpreter.cache_interpretation()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#strategy_interpreter.StrategyInterpreter.interpret_strategy"><code class="docutils literal notranslate"><span class="pre">StrategyInterpreter.interpret_strategy()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="strategy_templates.html">Strategy Templates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="main.html">Main Application</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Prisoner's Dilemma Simulator</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Strategy Interpreter</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/modules/strategy_interpreter.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="strategy-interpreter">
+<h1>Strategy Interpreter<a class="headerlink" href="#strategy-interpreter" title="Link to this heading"></a></h1>
+<p id="module-strategy_interpreter">strategy_interpreter.py</p>
+<p>This module provides AI-powered interpretation of natural language strategy descriptions
+for the Prisoner’s Dilemma game. It uses OpenAI’s GPT model to convert human-readable
+strategy descriptions into structured game logic.</p>
+<p>Key features:
+- Natural language processing of strategy descriptions
+- Conversion to structured game patterns
+- Strategy validation and error handling
+- Caching of interpreted strategies for performance
+- Fallback mechanisms for handling interpretation errors</p>
+<p>The StrategyInterpreter class supports three types of patterns:
+1. Sequence patterns (e.g., “cooperate 5 moves then defect 5 moves”)
+2. Conditional patterns (e.g., “copy opponent’s last move”)
+3. Simple patterns (e.g., “always cooperate”, “always defect”, “random”)</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="strategy_interpreter.StrategyInterpreter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">StrategyInterpreter</span></span><a class="reference internal" href="../_modules/strategy_interpreter.html#StrategyInterpreter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#strategy_interpreter.StrategyInterpreter" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="strategy_interpreter.StrategyInterpreter.get_cached_interpretation">
+<span class="sig-name descname"><span class="pre">get_cached_interpretation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">strategy_text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/strategy_interpreter.html#StrategyInterpreter.get_cached_interpretation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#strategy_interpreter.StrategyInterpreter.get_cached_interpretation" title="Link to this definition"></a></dt>
+<dd><p>Get cached interpretation if it exists.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>]</span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>strategy_text</strong> (<em>str</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="strategy_interpreter.StrategyInterpreter.cache_interpretation">
+<span class="sig-name descname"><span class="pre">cache_interpretation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">strategy_text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interpretation</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/strategy_interpreter.html#StrategyInterpreter.cache_interpretation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#strategy_interpreter.StrategyInterpreter.cache_interpretation" title="Link to this definition"></a></dt>
+<dd><p>Cache the interpretation for future use.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>strategy_text</strong> (<em>str</em>)</p></li>
+<li><p><strong>interpretation</strong> (<em>Dict</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="strategy_interpreter.StrategyInterpreter.interpret_strategy">
+<span class="sig-name descname"><span class="pre">interpret_strategy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">strategy_text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/strategy_interpreter.html#StrategyInterpreter.interpret_strategy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#strategy_interpreter.StrategyInterpreter.interpret_strategy" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>strategy_text</strong> (<em>str</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="game_logic.html" class="btn btn-neutral float-left" title="Game Logic" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="strategy_templates.html" class="btn btn-neutral float-right" title="Strategy Templates" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 1980, Replit.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

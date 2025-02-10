@@ -1,0 +1,43 @@
+Welcome to Prisoner's Dilemma Simulator's documentation!
+======================================================
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+   modules/game_logic
+   modules/strategy_interpreter
+   modules/strategy_templates
+   modules/main
+
+Introduction
+============
+
+This is the documentation for the Prisoner's Dilemma Simulator, an advanced simulation platform
+that leverages AI and interactive tools for dynamic strategy exploration and comparative analysis.
+
+Key Features
+===========
+
+* Interactive Strategy Creation
+* AI-Powered Strategy Interpretation
+* Multiple Game Modes
+* Rich Visualization
+* Built-in Strategy Templates
+
+Getting Started
+==============
+
+To get started with the simulator, check out the following sections:
+
+* :doc:`modules/game_logic` - Core game mechanics and rules
+* :doc:`modules/strategy_interpreter` - AI-powered strategy interpretation
+* :doc:`modules/strategy_templates` - Pre-defined strategy templates
+* :doc:`modules/main` - Main application and web interface
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
