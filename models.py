@@ -1,3 +1,13 @@
+# models.py
+#
+# This module defines the database models used for storing game and strategy
+# performance data. It includes models for games and strategy performance,
+# and provides the necessary schema for database interactions.
+#
+# Dependencies:
+# - SQLAlchemy: For ORM and database management.
+# - other necessary modules for database configuration.
+
 from sqlalchemy import create_engine, Column, Integer, String, Float, DateTime, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship

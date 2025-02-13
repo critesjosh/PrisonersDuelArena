@@ -1,3 +1,14 @@
+# strategies.py
+#
+# This module manages the implementation and execution of various strategies
+# within the game environment. It provides functions to retrieve, add, and
+# execute strategies, allowing for dynamic strategy management.
+#
+# Dependencies:
+# - strategy_interpreter: For interpreting and executing strategies.
+# - typing: For type hinting and annotations.
+# - other necessary modules for strategy logic.
+
 from typing import List, Tuple, Optional, Callable, Union
 from strategy_interpreter import StrategyInterpreter
 import random

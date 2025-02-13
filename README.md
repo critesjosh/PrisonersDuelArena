@@ -1,14 +1,18 @@
 # Set your OpenAI API key in the environment
-   # This is required for strategy parsing functionality
-   export OPENAI_API_KEY='your-api-key'
-   ```
+
+This is required for strategy parsing functionality
+
+```
+export OPENAI_API_KEY='your-api-key'
+```
 
 2. **Running the Application**:
-   ```bash
-   streamlit run main.py --server.port 5000
-   ```
 
-   The application will be available at `http://localhost:5000`
+```bash
+streamlit run main.py --server.port 5000
+```
+
+The application will be available at `http://localhost:5000`
 
 ## 🔧 Setup Requirements
 
@@ -19,6 +23,7 @@
 ## ⚙️ Configuration
 
 1. **Environment Setup**:
+
    - The application uses environment variables for configuration
    - Required environment variables:
      - `OPENAI_API_KEY`: Your OpenAI API key for strategy parsing
@@ -26,6 +31,7 @@
    - OpenAI API key will be prompted during first run if not set
 
 2. **Database Configuration**:
+
    - The application uses PostgreSQL for storing:
      - Game results
      - Strategy statistics
@@ -50,6 +56,7 @@
 ## 📝 Creating Custom Strategies
 
 1. **Using Templates**:
+
    - Browse pre-defined strategy templates in the sidebar
    - Templates range from basic to advanced complexity levels
    - Click "Use This Template" to populate the strategy creation form
@@ -66,6 +73,7 @@
 ## 📊 Analysis Features
 
 - **Per-Game Analysis**:
+
   - Final scores comparison
   - Round-by-round score progression
   - Cooperation rate tracking
@@ -83,3 +91,4 @@ The project uses Sphinx for documentation generation. You can build the document
 ```bash
 cd docs
 make html
+```

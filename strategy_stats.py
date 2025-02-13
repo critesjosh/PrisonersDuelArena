@@ -1,6 +1,19 @@
+# strategy_stats.py
+#
+# This module handles the statistics and performance tracking of strategies
+# within a game environment. It provides functionality to update and retrieve
+# strategy performance metrics, record game results, and manage database
+# interactions.
+#
+# Dependencies:
+# - models: Contains the Game and StrategyPerformance models.
+# - datetime: For handling date and time operations.
+# - typing: For type hinting and annotations.
+
 from typing import Dict
 from models import Game, StrategyPerformance, get_db
 from datetime import datetime
+
 
 class StrategyStats:
     def __init__(self):
