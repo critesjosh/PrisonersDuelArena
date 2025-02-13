@@ -84,11 +84,28 @@ The application will be available at `http://localhost:5000`
   - Historical performance tracking
   - Strategy effectiveness comparisons
 
-## 📚 Documentation
+## 🎛️ Advanced Features
 
-The project uses Sphinx for documentation generation. You can build the documentation using:
+- **Strategy Pattern Recognition**: AI-powered interpretation of strategy descriptions
+- **Pattern Validation**: Prevents misinterpretation of strategy logic
+- **Enhanced Logging**: Detailed strategy execution tracking
+- **Flexible Game Configuration**: Customizable game parameters
+
+<<<<<<< HEAD
 
 ```bash
 cd docs
 make html
 ```
+
+=======
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit pull requests, report bugs, or suggest new features.
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+> > > > > > > 4aced9e47d583fa60f48daa3a28fd6977658fb7f

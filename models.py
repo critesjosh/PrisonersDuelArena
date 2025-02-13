@@ -13,17 +13,12 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 import os
 from datetime import datetime
-import logging
-
-# Configure logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
 
 Base = declarative_base()
 
 class Game(Base):
     __tablename__ = 'games'
-
+    
     id = Column(Integer, primary_key=True)
     strategy1_name = Column(String, nullable=False)
     strategy2_name = Column(String, nullable=False)
@@ -36,7 +31,7 @@ class Game(Base):
 
 class StrategyPerformance(Base):
     __tablename__ = 'strategy_performance'
-
+    
     id = Column(Integer, primary_key=True)
     strategy_name = Column(String, nullable=False)
     total_games = Column(Integer, default=0)
@@ -45,32 +40,14 @@ class StrategyPerformance(Base):
     avg_cooperation_rate = Column(Float, default=0.0)
     last_updated = Column(DateTime, default=datetime.utcnow)
 
-# Database connection with error handling
-def get_database_url():
-    database_url = create_engine(os.getenv('DATABASE_URL', 'sqlite:///game_data.db'))
-    if not database_url:
-        raise EnvironmentError("DATABASE_URL environment variable is not set")
-    return database_url
-
-try:
-    engine = create_engine(get_database_url())
-    SessionLocal = sessionmaker(bind=engine)
-    logger.info("Database connection established successfully")
-except Exception as e:
-    logger.error(f"Failed to connect to database: {str(e)}")
-    raise
+# Database connection
+engine = create_engine(os.getenv('DATABASE_URL', 'sqlite:///game_data.db'))
+SessionLocal = sessionmaker(bind=engine)
 
 def init_db():
-    """Initialize the database, creating all tables."""
-    try:
-        Base.metadata.create_all(engine)
-        logger.info("Database tables created successfully")
-    except Exception as e:
-        logger.error(f"Failed to create database tables: {str(e)}")
-        raise
+    Base.metadata.create_all(engine)
 
 def get_db():
-    """Get database session with error handling."""
     db = SessionLocal()
     try:
         yield db

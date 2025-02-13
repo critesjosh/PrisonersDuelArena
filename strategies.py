@@ -12,18 +12,13 @@
 from typing import List, Tuple, Optional, Callable, Union
 from strategy_interpreter import StrategyInterpreter
 import random
+from typing import List, Tuple, Optional, Callable
+import re
+from strategy_interpreter import StrategyInterpreter
 
 class Strategy:
-    """Base class for implementing Prisoner's Dilemma strategies"""
-
-    def __init__(self, name: str = "Default Strategy", description: str = "Default strategy description"):
-        """Initialize a strategy with a name and description
-
-        Args:
-            name (str): The name of the strategy
-            description (str): A description of how the strategy works
-        """
-        self.name = name 
+    def __init__(self, name: str, description: str):
+        self.name = name
         self.description = description
         self.history: List[bool] = []
         self.opponent_history: List[bool] = []
@@ -32,33 +27,15 @@ class Strategy:
         """Return True for cooperate, False for defect"""
         return True  # Default to cooperation as a safe default
 
-    def update_history(self, my_choice: bool, opponent_choice: bool) -> None:
-        """Update the history of moves for this strategy and its opponent
-
-        Args:
-            my_choice (bool): The choice this strategy made (True for cooperate)
-            opponent_choice (bool): The choice opponent made (True for cooperate)
-        """
+    def update_history(self, my_choice: bool, opponent_choice: bool):
         self.history.append(my_choice)
         self.opponent_history.append(opponent_choice)
 
 class CustomStrategy(Strategy):
-    """A flexible strategy class that can be configured with custom logic"""
-
     instances = {}  # Class variable to store instance parameters
     interpreter = StrategyInterpreter()
 
-    def __init__(self, 
-                 name: Optional[str] = None, 
-                 description: Optional[str] = None, 
-                 logic: Optional[str] = None):
-        """Initialize a custom strategy
-
-        Args:
-            name (Optional[str]): Strategy name
-            description (Optional[str]): Strategy description
-            logic (Optional[str]): Logic description for the strategy
-        """
+    def __init__(self, name: str = None, description: str = None, logic: str = None):
         # Get class-level attributes if they exist
         class_name = getattr(self, 'name', None)
         class_description = getattr(self, 'description', None)
@@ -69,7 +46,7 @@ class CustomStrategy(Strategy):
         final_description = class_description or description or 'A custom strategy'
         final_logic = (class_logic or logic or 'always cooperate').lower()
 
-        super().__init__(name=final_name, description=final_description)
+        super().__init__(final_name, final_description)
         self.logic = final_logic
         self.move_counter = 0
 
