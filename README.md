@@ -1,3 +1,5 @@
+# Prisoners Duel Arena
+
 # Set your OpenAI API key in the environment
 
 This is required for strategy parsing functionality
@@ -8,8 +10,8 @@ export OPENAI_API_KEY='your-api-key'
 
 2. **Running the Application**:
 
-```bash
-streamlit run main.py --server.port 5000
+````bash
+streamlit run main.py
 ```
 
 The application will be available at `http://localhost:5000`
@@ -91,21 +93,10 @@ The application will be available at `http://localhost:5000`
 - **Enhanced Logging**: Detailed strategy execution tracking
 - **Flexible Game Configuration**: Customizable game parameters
 
-<<<<<<< HEAD
+## Running Tests
 
-```bash
-cd docs
-make html
-```
+To run the tests, use the following command:
 
-=======
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit pull requests, report bugs, or suggest new features.
-
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-> > > > > > > 4aced9e47d583fa60f48daa3a28fd6977658fb7f
+```sh
+python -m unittest discover -s tests
+````
