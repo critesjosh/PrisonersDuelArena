@@ -13,6 +13,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 import os
 from datetime import datetime
+from contextlib import contextmanager
 
 Base = declarative_base()
 
@@ -53,3 +54,16 @@ def get_db():
         yield db
     finally:
         db.close()
+
+@contextmanager
+def db_session():
+    """Provide a transactional scope around a series of operations."""
+    session = SessionLocal()
+    try:
+        yield session
+        session.commit()
+    except:
+        session.rollback()
+        raise
+    finally:
+        session.close()

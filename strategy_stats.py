@@ -11,7 +11,7 @@
 # - typing: For type hinting and annotations.
 
 from typing import Dict
-from models import Game, StrategyPerformance, get_db
+from models import Game, StrategyPerformance, get_db, db_session
 from datetime import datetime
 
 
@@ -77,3 +77,37 @@ class StrategyStats:
         )
         self.db.add(game)
         self.db.commit()
+
+    def get_all_games(self) -> list:
+        """
+        Get all recorded games from the database.
+        
+        Returns:
+            list: List of dictionaries containing game data with keys:
+                - player1: Name of first player's strategy
+                - player2: Name of second player's strategy
+                - score1: First player's score
+                - score2: Second player's score
+                - cooperation_rate1: First player's cooperation rate
+                - cooperation_rate2: Second player's cooperation rate
+                - total_rounds: Number of rounds played
+        """
+        games = self.db.query(Game).all()
+        return [{
+            'player1': game.strategy1_name,
+            'player2': game.strategy2_name,
+            'score1': game.score1,
+            'score2': game.score2,
+            'cooperation_rate1': game.cooperation_rate1,
+            'cooperation_rate2': game.cooperation_rate2,
+            'total_rounds': game.total_rounds
+        } for game in games]
+
+    def clear_all_stats(self):
+        """
+        Clears all historical game data from the database.
+        """
+        with db_session() as session:
+            session.query(Game).delete()
+            session.query(StrategyPerformance).delete()
+            session.commit()

@@ -170,3 +170,18 @@ def get_all_strategies() -> List[Strategy]:
         RandomStrategy()
     ]
     return base_strategies + _custom_strategies
+
+def remove_custom_strategy(strategy_name):
+    """
+    Removes a custom strategy from the database.
+    
+    Args:
+        strategy_name (str): Name of the strategy to remove
+    """
+    from models import CustomStrategy, db_session
+    
+    with db_session() as session:
+        strategy = session.query(CustomStrategy).filter_by(name=strategy_name).first()
+        if strategy:
+            session.delete(strategy)
+            session.commit()
