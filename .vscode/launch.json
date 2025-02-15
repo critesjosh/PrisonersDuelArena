@@ -1,0 +1,37 @@
+{
+  "configurations": [
+    {
+      "type": "debugpy",
+      "request": "launch",
+      "name": "Launch Program",
+      "program": "${workspaceFolder}/${input:programPath}"
+    },
+    {
+      "name": "Python: Run Tests",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "-m",
+      "args": ["unittest", "discover", "tests"],
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "python": "${command:python.interpreterPath}"
+    }
+  ],
+  "inputs": [
+    {
+      "type": "pickString",
+      "id": "programPath",
+      "description": "Select the Python file to debug",
+      "options": [
+        "main.py",
+        "game_logic.py",
+        "models.py",
+        "strategies.py",
+        "strategy_interpreter.py",
+        "strategy_stats.py",
+        "strategy_templates.py",
+        "visualizations.py"
+      ]
+    }
+  ]
+}

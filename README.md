@@ -92,11 +92,4 @@ The application will be available at `http://localhost:5000`
 - **Pattern Validation**: Prevents misinterpretation of strategy logic
 - **Enhanced Logging**: Detailed strategy execution tracking
 - **Flexible Game Configuration**: Customizable game parameters
-
-## Running Tests
-
-To run the tests, use the following command:
-
-```sh
-python -m unittest discover -s tests
 ````
